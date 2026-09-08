@@ -1,4 +1,6 @@
-import {CONFIG} from './config.js?v=2a';import {POWERUP_TYPES} from './powerup.js?v=2a';
+import {CONFIG} from './config.js?v=2a-zh';import {POWERUP_TYPES} from './powerup.js?v=2a-zh';
+const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球'};
+const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
 export class Renderer{
  constructor(canvas,particles){this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.particles=particles;this.flash=0;this.shake=0;this.caption=null;}
@@ -10,7 +12,7 @@ export class Renderer{
    if(duration)this.shake=duration; // Replace, never accumulate impulses.
   }
   if(name==='brick_break')this.particles.burst(data.x,data.y,data.color,22);
-  if(name==='powerup_pickup'){this.particles.burst(data.x,data.y,data.color,38);this.caption={text:data.label,sub:'POWER UP',time:1.3,color:data.color};}
+  if(name==='powerup_pickup'){this.particles.burst(data.x,data.y,data.color,38);this.caption={text:data.label,sub:CAPTIONS[data.type]||'道具啟動',time:1.3,color:data.color};}
   if(name==='level_clear')this.flash=.3;
   if(name==='high_score')this.flash=.65;
  }
@@ -20,7 +22,7 @@ export class Renderer{
  c.save();if(this.shake>0)c.translate(Math.sin(this.shake*350)*2,Math.cos(this.shake*420)*2);
  c.strokeStyle='#3b63831c';c.lineWidth=1;for(let x=0;x<W;x+=64){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}for(let y=16;y<H;y+=48){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
  c.fillStyle='#39dff8';c.shadowColor='#39dff8';c.shadowBlur=12;c.fillRect(0,0,3,H-32);c.fillRect(W-3,0,3,H-32);c.fillRect(0,0,W,3);c.shadowBlur=0;
- c.textAlign='left';c.font='600 13px ui-monospace,monospace';c.fillStyle='#5a7895';c.fillText('SECTOR '+String(g.level||1).padStart(2,'0')+'   /   NEON ARCADE',36,43);c.textAlign='right';c.fillText('BREAK • REFLECT • REPEAT',W-36,43);
+ c.textAlign='left';c.font='600 13px ui-monospace,monospace';c.fillStyle='#5a7895';c.fillText('關卡 '+String(g.level||1).padStart(2,'0')+'   /   霓虹街機',36,43);c.textAlign='right';c.fillText('擊破・反彈・再挑戰',W-36,43);
  for(const b of g.bricks||[]){
   if(b.destroyed)continue;c.save();c.shadowColor=b.color;c.shadowBlur=b.type===3?0:b.type===4?9:4;
   const gradient=c.createLinearGradient(b.x,b.y,b.x,b.y+b.height);gradient.addColorStop(0,b.flash>0?'#ffffff':b.color);gradient.addColorStop(1,b.type===3?'#29394e':b.color+'99');c.fillStyle=gradient;rounded(c,b.x,b.y,b.width,b.height,5);c.fill();c.shadowBlur=0;c.strokeStyle=b.type===3?'#8593a6':b.color;c.lineWidth=1;c.stroke();c.fillStyle='#ffffff50';c.fillRect(b.x+7,b.y+4,b.width-14,2);
@@ -46,8 +48,8 @@ export class Renderer{
  for(const b of g.balls||[]){const trail=b.trail||[],fire=effects.fire>0;c.save();if(!b.attached)for(let i=0;i<trail.length;i++){const t=trail[i];c.globalAlpha=(i+1)/trail.length*(fire?.42:.25);c.fillStyle=fire?'#ff934f':'#52e7ff';c.beginPath();c.arc(t.x,t.y,b.radius*((i+1)/trail.length)*.8,0,Math.PI*2);c.fill();}c.globalAlpha=1;c.shadowBlur=fire?19:15;c.shadowColor=fire?'#ffab59':'#9af4ff';c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,b.radius,0,Math.PI*2);c.fill();c.restore();}
  this.particles.render(c);c.fillStyle='#ff528544';c.fillRect(20,H-13,W-40,1);c.font='600 21px ui-monospace,monospace';c.textAlign='left';
  const active=Object.entries(effects).filter(([type,time])=>time>0&&POWERUP_TYPES[type]);const slot=Math.min(230,(W-64)/Math.max(1,active.length));
- active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+type.toUpperCase()+' '+time.toFixed(1)+'s',32+i*slot,H-30,slot-12);});
- if((g.balls||[]).some(b=>b.attached)){c.save();c.font='800 34px ui-monospace,monospace';c.textAlign='center';c.strokeStyle='#08111f';c.lineWidth=9;c.strokeText('SPACE / TAP TO RELEASE',W/2,p.y-56);c.fillStyle='#b9ffd0';c.fillText('SPACE / TAP TO RELEASE',W/2,p.y-56);c.restore();}
+ active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+EFFECT_NAMES[type]+' '+time.toFixed(1)+'秒',32+i*slot,H-30,slot-12);});
+ if((g.balls||[]).some(b=>b.attached)){c.save();c.font='800 34px ui-monospace,monospace';c.textAlign='center';c.strokeStyle='#08111f';c.lineWidth=9;c.strokeText('空白鍵／輕點放球',W/2,p.y-56);c.fillStyle='#b9ffd0';c.fillText('空白鍵／輕點放球',W/2,p.y-56);c.restore();}
  if(this.caption){const t=this.caption;c.save();c.globalAlpha=Math.min(1,t.time*3);c.textAlign='center';c.lineWidth=8;c.strokeStyle='#060914';c.shadowColor=t.color;c.shadowBlur=25;c.font='900 58px system-ui';c.strokeText(t.text,W/2,H*.58);c.fillStyle=t.color;c.fillText(t.text,W/2,H*.58);c.font='bold 22px ui-monospace,monospace';c.fillStyle='#fff';c.fillText(t.sub,W/2,H*.58+35);c.restore();}
  if(this.flash>0){c.fillStyle=`rgba(139,225,255,${this.flash*.3})`;c.fillRect(0,0,W,H);}c.restore();if(dim){c.fillStyle='#0509187a';c.fillRect(0,0,W,H);}
  }

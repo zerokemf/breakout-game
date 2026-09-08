@@ -1,4 +1,4 @@
-import {CONFIG} from './config.js?v=2a';
+import {CONFIG} from './config.js?v=2a-zh';
 export const POWERUP_TYPES=Object.freeze({
  extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{g.effects.extend=15;g.paddle.setWidth(CONFIG.paddleWidth*1.5);}},
  slow:{icon:'↓',label:'SLOW BALL',color:'#b68cff',apply:g=>{g.effects.slow=10;for(const b of g.balls)b.setSpeed(g.currentSpeed());}},

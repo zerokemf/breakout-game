@@ -43,7 +43,7 @@ test('fire keeps a white ball core; laser, sticky and extend add readable paddle
 });
 test('attached ball shows release hint, minimal scenes allow null effects',()=>{
  const {renderer:r,calls}=fixture(),g=scene();g.effects=null;g.balls=[{x:550,y:640,radius:8,attached:true}];
- r.render(g);assert.ok(calls.some(c=>c[0]==='fillText'&&c[1]==='SPACE / TAP TO RELEASE'));
+ r.render(g);assert.ok(calls.some(c=>c[0]==='fillText'&&c[1]==='空白鍵／輕點放球'));
 });
 test('strong bricks have large durability dots and a high contrast crack after damage',()=>{
  const {renderer:r,calls}=fixture(),g=scene();g.bricks=buildBricks({grid:[[2,3,4]]});
@@ -63,9 +63,10 @@ test('minimal renderer state tolerates absent collections and null effects',()=>
 });
 test('all five timed effect indicators fit within the canvas',()=>{
  const {renderer:r,calls}=fixture(),g=scene();g.effects={extend:15,slow:10,fire:15,laser:12,sticky:12};r.render(g);
- const labels=calls.filter(c=>c[0]==='fillText'&&/\d+\.\ds$/.test(c[1]));assert.equal(labels.length,5);
+ const labels=calls.filter(c=>c[0]==='fillText'&&/\d+\.\d秒$/.test(c[1]));assert.equal(labels.length,5);
  for(const c of labels){assert.ok(c[2]>=0);assert.ok(c[2]+c[4]<=1280);}
 });
+test('English hero caption retains Chinese explanation',()=>{const {renderer:r}=fixture();r.event('powerup_pickup',{type:'fire',label:'FIRE BALL',color:'#fff',x:1,y:1},{screenShake:true});assert.equal(r.caption.text,'FIRE BALL');assert.equal(r.caption.sub,'火焰球・穿透磚塊');});
 const pickup=type=>({type,x:100,y:200,color:'#ffeeaa',label:type});
 test('routine contacts never initiate shake; only selected milestones shake without accumulation',()=>{
  const {renderer:r}=fixture(),settings={screenShake:true};

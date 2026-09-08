@@ -6,6 +6,10 @@ Play: https://zerokemf.github.io/breakout-game/
 
 Deployment status: live on GitHub Pages. Production-URL browser acceptance passed, including real NAS score submission, reload persistence and retrieval by a separate browser.
 
+## 介面語言
+
+介面採繁體中文：選單、關卡名稱、操作提示、設定、道具說明、排行榜及連線錯誤訊息。保留 BREAKOUT 品牌與中央英文道具特效大字，特效下方提供繁中解說。排行榜代號仍使用三碼 A–Z／0–9。語系更新不改動分數、物理、關卡、存檔或 API schema。
+
 ## Controls
 - Move: Arrow Left / Arrow Right, A / D, mouse, or touch drag.
 - Launch: Space or a tap (dragging in READY does not launch).

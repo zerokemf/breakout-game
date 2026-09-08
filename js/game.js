@@ -1,8 +1,8 @@
-import {CONFIG,STATES} from './config.js?v=2a';
-import {Ball} from './ball.js?v=2a';import {Paddle} from './paddle.js?v=2a';
-import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a';import {LEVELS} from './levels.js?v=2a';
-import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a';
-import {buildBricks} from './brick.js?v=2a';import {ScoreManager} from './score.js?v=2a';
+import {CONFIG,STATES} from './config.js?v=2a-zh';
+import {Ball} from './ball.js?v=2a-zh';import {Paddle} from './paddle.js?v=2a-zh';
+import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a-zh';import {LEVELS} from './levels.js?v=2a-zh';
+import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a-zh';
+import {buildBricks} from './brick.js?v=2a-zh';import {ScoreManager} from './score.js?v=2a-zh';
 export class Game{
  constructor({onEvent=()=>{},onState=()=>{}}={}){this.onEvent=onEvent;this.onState=onState;this.state=STATES.MENU;this.mode='campaign';this.paddle=new Paddle();this.balls=[];this.bricks=[];this.keys=new Set();this.pointer=null;this.score=new ScoreManager();this.powerups=[];this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.elapsed=0;this.accumulator=0;}
  transition(state){if(!Object.values(STATES).includes(state))throw new Error('Unknown state');this.state=state;this.accumulator=0;this.onState(state);}
