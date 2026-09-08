@@ -54,7 +54,7 @@ html[lang="zh-Hant"] .hud-label,.pause-label{font-size:12px}
 
 /* Embedded cabinet: host already supplies title/navigation. Height drives size. */
 html.embedded-game .masthead,html.embedded-game .page-footer,html.embedded-game .controls-bar{display:none}
-html.embedded-game .arcade-shell{width:min(calc(100% - 12px),calc((100dvh - 72px)*16/9));padding:6px 0;margin:auto;max-width:none}
+html.embedded-game .arcade-shell{width:min(calc(100% - 12px),calc((100dvh - 96px)*16/9));padding:6px 0;margin:auto;max-width:none}
 html.embedded-game .hud{min-height:58px;padding:8px 20px}
 html.embedded-game .hud-label{font-size:15px}
 html.embedded-game .hud strong{font-size:30px}
