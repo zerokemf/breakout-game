@@ -10,5 +10,5 @@ export class Brick{
 }
 export function buildBricks(level){
  const cols=level.grid[0].length,gap=8,width=(1152-gap*(cols-1))/cols,offset=((level.id||1)-1)%PALETTE.length;
- return level.grid.flatMap((row,y)=>row.flatMap((type,x)=>type?[new Brick(type,64+x*(width+gap),92+y*38,width,28,type<=2?PALETTE[(y+offset)%PALETTE.length][(x+y)%3]:BRICK_TYPES[type].color)]:[]));
+ return level.grid.flatMap((row,y)=>row.flatMap((type,x)=>{if(!type)return [];const brick=new Brick(type,64+x*(width+gap),92+y*38,width,28,type<=2?PALETTE[(y+offset)%PALETTE.length][(x+y)%3]:BRICK_TYPES[type].color);const bottommost=!level.grid.slice(y+1).some(r=>r[x]!==0);brick.bonusDrop=type!==3&&type!==4&&bottommost&&(level.bonusDropColumns||[]).includes(x);return [brick];}));
 }

@@ -1,5 +1,5 @@
-import {Game} from './game.js?v=2a-zh';import {CONFIG,STATES} from './config.js?v=2a-zh';import {LEVELS} from './levels.js?v=2a-zh';
-import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2a-zh';import {Particles} from './particles.js?v=2a-zh';import {AudioManager} from './audio.js?v=2a-zh';import {Renderer} from './renderer.js?v=2a-zh';
+import {Game} from './game.js?v=2a-drops';import {CONFIG,STATES} from './config.js?v=2a-drops';import {LEVELS} from './levels.js?v=2a-drops';
+import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2a-drops';import {Particles} from './particles.js?v=2a-drops';import {AudioManager} from './audio.js?v=2a-drops';import {Renderer} from './renderer.js?v=2a-drops';
 const $=id=>document.getElementById(id),panel=$('panel'),overlay=$('overlay'),stage=$('stage'),canvas=$('gameCanvas');
 const read=(key,fallback)=>{try{const v=JSON.parse(safeStorage.getItem(key));return v??fallback;}catch{return fallback;}};
 const number=(key,fallback,min,max)=>{const n=Number(read(key,fallback));return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback;};
@@ -18,7 +18,7 @@ function heading(title,sub=''){return `<p class="eyebrow">威力／霓虹街機<
 function stats(){return `<div class="stats"><div class="stat"><span>分數</span><strong>${fmt(game.score.getScore())}</strong></div><div class="stat"><span>個人最佳</span><strong>${fmt(personalBest)}</strong></div></div>`;}
 function menu(){screen='menu';endingToken++;game.keys.clear();game.transition(STATES.MENU);audio.resume();show(heading('BREAKOUT','找準角度，突破極限。')+`<p class="eyebrow">10 大關卡・7 種道具・共享排行榜</p><div class="actions">${button('開始遊戲','play','primary')}${button('選擇關卡','levels')}${button('排行榜','scores')}${button('設定','settings')}</div><p class="notice">個人最佳 ${fmt(personalBest)}</p>`);}
 function start(level=1){audio.unlock();particles.clear();notice='';submitted=false;qualifyingRank=null;endingToken++;runId=crypto.randomUUID();screen='game';game.start(level);document.activeElement?.blur();}
-function stateChanged(state){$('pauseButton').disabled=![STATES.READY,STATES.PLAYING,STATES.PAUSED].includes(state);if(state===STATES.READY){screen='game';audio.resume();show(`<p class="eyebrow">關卡 ${String(game.level).padStart(2,'0')}／${levelName(game.level)}</p><h2>準備好了嗎？</h2><p class="subtitle">移動擋板，按空白鍵或輕觸發球。</p>${button('發球','launch','primary')}`,{pass:true});}
+function stateChanged(state){$('pauseButton').disabled=![STATES.READY,STATES.PLAYING,STATES.PAUSED].includes(state);if(state===STATES.READY){screen='game';audio.resume();show(`<p class="eyebrow">關卡 ${String(game.level).padStart(2,'0')}／${levelName(game.level)}</p><h2>準備好了嗎？</h2><p class="subtitle">移動擋板，按空白鍵或輕觸發球。擊破 ★ 接道具！</p>${button('發球','launch','primary')}`,{pass:true});}
  if(state===STATES.PLAYING){overlay.hidden=true;screen='game';audio.resume();}
  if(state===STATES.PAUSED){audio.suspend();show(heading('已暫停','稍作休息，所有計時器已暫停。')+`<div class="actions">${button('繼續遊戲','resume','primary')}${button('重新開始','restart')}${button('主選單','menu')}</div>`);}
  if(state===STATES.LEVEL_CLEAR){unlockedLevel=Math.max(unlockedLevel,Math.min(10,game.level+1));save('unlockedLevel',unlockedLevel);updateBest();show(heading(game.level===10?'全關卡通關':'關卡完成',levelName(game.level))+stats()+`<div class="actions">${button(game.level===10?'結束挑戰':'下一關','next','primary')}${button('主選單','menu')}</div>`);}

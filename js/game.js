@@ -1,12 +1,12 @@
-import {CONFIG,STATES} from './config.js?v=2a-zh';
-import {Ball} from './ball.js?v=2a-zh';import {Paddle} from './paddle.js?v=2a-zh';
-import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a-zh';import {LEVELS} from './levels.js?v=2a-zh';
-import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a-zh';
-import {buildBricks} from './brick.js?v=2a-zh';import {ScoreManager} from './score.js?v=2a-zh';
+import {CONFIG,STATES} from './config.js?v=2a-drops';
+import {Ball} from './ball.js?v=2a-drops';import {Paddle} from './paddle.js?v=2a-drops';
+import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a-drops';import {LEVELS} from './levels.js?v=2a-drops';
+import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a-drops';
+import {buildBricks} from './brick.js?v=2a-drops';import {ScoreManager} from './score.js?v=2a-drops';
 export class Game{
  constructor({onEvent=()=>{},onState=()=>{}}={}){this.onEvent=onEvent;this.onState=onState;this.state=STATES.MENU;this.mode='campaign';this.paddle=new Paddle();this.balls=[];this.bricks=[];this.keys=new Set();this.pointer=null;this.score=new ScoreManager();this.powerups=[];this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.elapsed=0;this.accumulator=0;}
  transition(state){if(!Object.values(STATES).includes(state))throw new Error('Unknown state');this.state=state;this.accumulator=0;this.onState(state);}
- start(level=1){if(!Number.isInteger(level)||level<1||level>LEVELS.length)throw new RangeError('Invalid level');this.level=level;this.startLevel=level;this.lives=3;this.destroyedCount=0;this.elapsed=0;this.score.resetScore();this.loadLevel();}
+ start(level=1){if(!Number.isInteger(level)||level<1||level>LEVELS.length)throw new RangeError('Invalid level');this.level=level;this.startLevel=level;this.dropIndex=0;this.lives=3;this.destroyedCount=0;this.elapsed=0;this.score.resetScore();this.loadLevel();}
  loadLevel(){this.paddle=new Paddle();this.pointer=null;this.keys.clear();this.bricks=buildBricks(LEVELS[this.level-1]);this.resetReady();}
  resetReady(){this.powerups=[];this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.paddle.setWidth(CONFIG.paddleWidth);this.balls=[new Ball(this.paddle.centerX,this.paddle.y-CONFIG.ballRadius-1)];this.balls[0].speed=this.currentSpeed();this.transition(STATES.READY);}
  currentSpeed(){return Math.min(CONFIG.initialSpeed*CONFIG.maxSpeedFactor,CONFIG.initialSpeed*1.025**Math.floor(this.destroyedCount/10))*(this.effects.slow>0?.8:1);}
@@ -50,6 +50,7 @@ export class Game{
  }
  b.trail.push({x:b.x,y:b.y});if(b.trail.length>20)b.trail.shift();if(b.y-b.radius>CONFIG.height)b.active=false;
  }
+ nextDropType(){const intro=['extend','laser','multi','fire','sticky','slow','life'];const i=this.dropIndex++;return i<intro.length?intro[i]:Object.keys(POWERUP_TYPES)[Math.floor(Math.random()*Object.keys(POWERUP_TYPES).length)];}
  hitBrick(brick,{fire=false}={}){if(brick.destroyed)return;if(fire&&brick.destructible)brick.hp=1;const result=brick.hit();this.onEvent(brick.type===3?'steel_hit':result.destroyed?'brick_break':'brick_hit',{x:brick.x+brick.width/2,y:brick.y+brick.height/2,color:brick.color});
- if(result.destroyed){this.score.addScore(result.points,{brickType:brick.type});this.destroyedCount++;if(brick.type===4){const types=Object.keys(POWERUP_TYPES);this.powerups.push(new PowerUp(brick.x+brick.width/2,brick.y+brick.height/2,types[Math.floor(Math.random()*types.length)]));this.onEvent('powerup_spawn',{});}for(const b of this.balls)b.setSpeed(this.currentSpeed());if(this.bricks.every(b=>!b.destructible||b.destroyed)){this.transition(STATES.LEVEL_CLEAR);this.onEvent('level_clear',{level:this.level});}}}
+ if(result.destroyed){this.score.addScore(result.points,{brickType:brick.type});this.destroyedCount++;if(brick.type===4||brick.bonusDrop){this.powerups.push(new PowerUp(brick.x+brick.width/2,brick.y+brick.height/2,this.nextDropType()));this.onEvent('powerup_spawn',{});}for(const b of this.balls)b.setSpeed(this.currentSpeed());if(this.bricks.every(b=>!b.destructible||b.destroyed)){this.transition(STATES.LEVEL_CLEAR);this.onEvent('level_clear',{level:this.level});}}}
 }

@@ -1,4 +1,4 @@
-import {CONFIG} from './config.js?v=2a-zh';import {POWERUP_TYPES} from './powerup.js?v=2a-zh';
+import {CONFIG} from './config.js?v=2a-drops';import {POWERUP_TYPES} from './powerup.js?v=2a-drops';
 const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球'};
 const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
@@ -33,6 +33,7 @@ export class Renderer{
    c.strokeStyle='#15213788';c.lineWidth=1;rounded(c,b.x+3,b.y+3,b.width-6,b.height-6,3);c.stroke();
   }
   if(b.type===3){for(const x of [b.x+8,b.x+b.width-8])for(const y of [b.y+9,b.y+b.height-7]){c.fillStyle='#b0bccb';c.beginPath();c.arc(x,y,2,0,Math.PI*2);c.fill();c.fillStyle='#334258';c.fillRect(x-1,y,2,1);}}
+  if(b.bonusDrop){c.fillStyle='#091321';c.fillRect(b.x+b.width/2-12,b.y+6,24,20);c.fillStyle='#fff2b0';c.textAlign='center';c.font='bold 20px system-ui';c.fillText('★',b.x+b.width/2,b.y+22);}
   if(b.type===4){c.fillStyle='#5c3a0d';c.textAlign='center';c.font='bold 22px system-ui';c.fillText('★',b.x+b.width/2,b.y+22);}
   c.restore();
  }

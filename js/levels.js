@@ -11,6 +11,6 @@ const definitions=[
  ['POWER SURGE',['41414141414','12121212121','40141414104','11311111311','41422222414','11114141111']],
  ['FINAL FREQUENCY',['22422222422','21321112312','22422222422','21223232212','22421212422','03222222230','21241414212']]
 ];
-export const LEVELS=definitions.map(([name,rows],i)=>({id:i+1,name,grid:rows.map(row=>[...row].map(Number))}));
+export const LEVELS=definitions.map(([name,rows],i)=>({id:i+1,name,grid:rows.map(row=>[...row].map(Number)),bonusDropColumns:i<3?[1,3,4,6,7,9]:i<8?[2,5,8]:[]}));
 export const LEVEL_MAX_SCORES=LEVELS.map(l=>l.grid.flat().reduce((sum,t)=>sum+({1:100,2:200,4:150}[t]||0),0));
 export const CUMULATIVE_MAX_SCORES=LEVEL_MAX_SCORES.map((_,i)=>LEVEL_MAX_SCORES.slice(0,i+1).reduce((a,b)=>a+b,0));

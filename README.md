@@ -6,6 +6,10 @@ Play: https://zerokemf.github.io/breakout-game/
 
 Deployment status: live on GitHub Pages. Production-URL browser acceptance passed, including real NAS score submission, reload persistence and retrieval by a separate browser.
 
+## 道具出現節奏
+
+第一關增加六個下排星號掉落點，加上原有兩塊道具磚，共八次掉落機會。第二、三關在各欄最下方增加星號掉落點；第四至第八關補充較易接觸的掉落點。每局前七次依序為加寬、雷射、多重球、火焰、黏球、慢速、生命，之後隨機；失去生命不重置順序。星號額外掉落不增加磚塊分數，原有排行榜上限不變。
+
 ## 介面語言
 
 介面採繁體中文：選單、關卡名稱、操作提示、設定、道具說明、排行榜及連線錯誤訊息。保留 BREAKOUT 品牌與中央英文道具特效大字，特效下方提供繁中解說。排行榜代號仍使用三碼 A–Z／0–9。語系更新不改動分數、物理、關卡、存檔或 API schema。
