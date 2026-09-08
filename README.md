@@ -12,7 +12,7 @@ Deployment status: live on GitHub Pages. Production-URL browser acceptance passe
 - Pause: P / Escape or the HUD pause button. Changing tabs pauses automatically.
 - Three lives; extra lives are capped at five. Level select unlocks locally.
 
-Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is indestructible and excluded from level completion. Power-ups: 15-second paddle extend, 10-second 20% slow ball, extra life. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
+Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is indestructible and excluded from level completion. Power-ups: 15-second paddle extend, 10-second 20% slow ball, extra life, multi-ball (three initially, six maximum), 15-second penetrating fire ball, 12-second automatic dual laser paddle, and 12-second sticky paddle. Space or tap releases sticky balls. Fire destroys strong bricks for the same 200 points, never bonus points; steel still blocks attacks. Timed pickups refresh rather than stack. All balls, including held ones, must be lost before one life is deducted. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
 
 ## Local development
 
@@ -52,6 +52,10 @@ The NAS backend, configuration, SQLite and logs are deliberately **not** in this
 
 GitHub Pages is enabled with the GitHub Actions build type. Push to `main`; the workflow runs logic tests, uploads only static `index.html`, `css/`, `js/`, `assets/`, then publishes Pages. All asset references are relative for project-page hosting. No backend packages or secrets enter the Pages artifact.
 
+## Phase 2A feedback
+
+Ordinary brick destruction, wall contacts, paddle contacts and laser hits never shake the screen. Multi-ball/fire activation, life loss and level clear use brief bounded feedback, disabled by Screen shake settings. Level/row palettes are richer while the ball retains a bright white core and brick types keep their visual symbols. Existing campaign scores remain compatible: the same finite bricks yield the same maximum points.
+
 ## Scope
 
-Phase 1 includes MENU / READY / PLAYING / PAUSED / LEVEL_CLEAR / GAME_OVER / ENTER_INITIALS / LEADERBOARD, ten levels and three power-ups. Multi-ball gameplay, fire/laser/sticky, combo, achievements and additional modes are future extensions, not claimed implemented. No accounts, editor, UGC or multiplayer.
+Includes MENU / READY / PLAYING / PAUSED / LEVEL_CLEAR / GAME_OVER / ENTER_INITIALS / LEADERBOARD, ten levels and seven power-ups. Multi-ball, fire, laser and sticky are implemented in Phase 2A. Combo, achievements, Boss and additional modes remain future extensions, not claimed implemented. No accounts, editor, UGC or multiplayer.

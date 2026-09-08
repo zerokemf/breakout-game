@@ -1,4 +1,4 @@
-import {API_BASE_URL} from './config.js';
+import {API_BASE_URL} from './config.js?v=2a';
 export function qualificationRank(score,rows){const rank=rows.filter(r=>r.score>=score).length+1;return rank<=10?rank:null;}
 export const safeStorage={getItem(key){try{return globalThis.localStorage?.getItem(key)??null;}catch{return null;}},setItem(key,value){try{globalThis.localStorage?.setItem(key,value);return true;}catch{return false;}}};
 export class ArcadeAPI{
