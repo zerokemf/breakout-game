@@ -2,9 +2,9 @@
 
 A complete ten-sector HTML5 Canvas arcade game, designed and made by Willie.
 
-Intended Pages URL: https://zerokemf.github.io/breakout-game/
+Play: https://zerokemf.github.io/breakout-game/
 
-Deployment status: source is locally complete; GitHub push and Pages activation are pending tool approval. Do not treat this URL as live until deployment succeeds.
+Deployment status: live on GitHub Pages. Production-URL browser acceptance passed, including real NAS score submission, reload persistence and retrieval by a separate browser.
 
 ## Controls
 - Move: Arrow Left / Arrow Right, A / D, mouse, or touch drag.
@@ -50,7 +50,7 @@ The NAS backend, configuration, SQLite and logs are deliberately **not** in this
 
 ## GitHub Pages deployment
 
-A GitHub Actions Pages workflow is included. Enable Pages with the GitHub Actions build type, then push to `main`; the workflow runs logic tests, uploads only static `index.html`, `css/`, `js/`, `assets/`, then publishes Pages. All asset references are relative for project-page hosting. No backend packages or secrets enter the Pages artifact.
+GitHub Pages is enabled with the GitHub Actions build type. Push to `main`; the workflow runs logic tests, uploads only static `index.html`, `css/`, `js/`, `assets/`, then publishes Pages. All asset references are relative for project-page hosting. No backend packages or secrets enter the Pages artifact.
 
 ## Scope
 
