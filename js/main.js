@@ -1,5 +1,6 @@
 import {Game} from './game.js?v=2a-comfort';import {CONFIG,STATES} from './config.js?v=2a-comfort';import {LEVELS} from './levels.js?v=2a-comfort';
 import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2a-comfort';import {Particles} from './particles.js?v=2a-comfort';import {AudioManager} from './audio.js?v=2a-comfort';import {Renderer} from './renderer.js?v=2a-comfort';
+if(window.self!==window.top)document.documentElement.classList.add('embedded-game');
 const $=id=>document.getElementById(id),panel=$('panel'),overlay=$('overlay'),stage=$('stage'),canvas=$('gameCanvas');
 const read=(key,fallback)=>{try{const v=JSON.parse(safeStorage.getItem(key));return v??fallback;}catch{return fallback;}};
 const number=(key,fallback,min,max)=>{const n=Number(read(key,fallback));return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback;};
