@@ -1,0 +1,1 @@
+export class ScoreManager{constructor(){this.resetScore();}resetScore(){this.value=0;}addScore(points,context={}){if(!Number.isSafeInteger(points)||points<0)throw new RangeError('Invalid points');this.value+=points;return this.value;}getScore(){return this.value;}}
