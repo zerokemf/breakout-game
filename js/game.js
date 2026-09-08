@@ -1,14 +1,14 @@
-import {CONFIG,STATES} from './config.js?v=2a-drops';
-import {Ball} from './ball.js?v=2a-drops';import {Paddle} from './paddle.js?v=2a-drops';
-import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a-drops';import {LEVELS} from './levels.js?v=2a-drops';
-import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a-drops';
-import {buildBricks} from './brick.js?v=2a-drops';import {ScoreManager} from './score.js?v=2a-drops';
+import {CONFIG,STATES} from './config.js?v=2a-comfort';
+import {Ball} from './ball.js?v=2a-comfort';import {Paddle} from './paddle.js?v=2a-comfort';
+import {sweepCircleRect,reflect,clamp} from './physics.js?v=2a-comfort';import {LEVELS} from './levels.js?v=2a-comfort';
+import {PowerUp,POWERUP_TYPES} from './powerup.js?v=2a-comfort';
+import {buildBricks} from './brick.js?v=2a-comfort';import {ScoreManager} from './score.js?v=2a-comfort';
 export class Game{
- constructor({onEvent=()=>{},onState=()=>{}}={}){this.onEvent=onEvent;this.onState=onState;this.state=STATES.MENU;this.mode='campaign';this.paddle=new Paddle();this.balls=[];this.bricks=[];this.keys=new Set();this.pointer=null;this.score=new ScoreManager();this.powerups=[];this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.elapsed=0;this.accumulator=0;}
+ constructor({onEvent=()=>{},onState=()=>{}}={}){this.onEvent=onEvent;this.onState=onState;this.state=STATES.MENU;this.mode='campaign';this.paddle=new Paddle();this.balls=[];this.bricks=[];this.keys=new Set();this.pointer=null;this.score=new ScoreManager();this.powerups=[];this.pendingDrop=null;this.dropCooldown=0;this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.elapsed=0;this.accumulator=0;}
  transition(state){if(!Object.values(STATES).includes(state))throw new Error('Unknown state');this.state=state;this.accumulator=0;this.onState(state);}
- start(level=1){if(!Number.isInteger(level)||level<1||level>LEVELS.length)throw new RangeError('Invalid level');this.level=level;this.startLevel=level;this.dropIndex=0;this.lives=3;this.destroyedCount=0;this.elapsed=0;this.score.resetScore();this.loadLevel();}
- loadLevel(){this.paddle=new Paddle();this.pointer=null;this.keys.clear();this.bricks=buildBricks(LEVELS[this.level-1]);this.resetReady();}
- resetReady(){this.powerups=[];this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.paddle.setWidth(CONFIG.paddleWidth);this.balls=[new Ball(this.paddle.centerX,this.paddle.y-CONFIG.ballRadius-1)];this.balls[0].speed=this.currentSpeed();this.transition(STATES.READY);}
+ start(level=1){if(!Number.isInteger(level)||level<1||level>LEVELS.length)throw new RangeError('Invalid level');this.level=level;this.startLevel=level;this.dropIndex=0;this.lives=3;this.destroyedCount=0;this.elapsed=0;this.score.resetScore();this.effects.extend=0;this.loadLevel();}
+ loadLevel(){const extend=this.effects.extend>0;this.paddle=new Paddle();this.pointer=null;this.keys.clear();this.dropsSpawned=0;this.bricks=buildBricks(LEVELS[this.level-1]);this.resetReady();if(extend)POWERUP_TYPES.extend.apply(this);}
+ resetReady(){this.powerups=[];this.pendingDrop=null;this.dropCooldown=0;this.bolts=[];this.laserClock=0;this.effects={extend:0,slow:0,fire:0,laser:0,sticky:0};this.paddle.setWidth(CONFIG.paddleWidth);this.balls=[new Ball(this.paddle.centerX,this.paddle.y-CONFIG.ballRadius-1)];this.balls[0].speed=this.currentSpeed();this.transition(STATES.READY);}
  currentSpeed(){return Math.min(CONFIG.initialSpeed*CONFIG.maxSpeedFactor,CONFIG.initialSpeed*1.025**Math.floor(this.destroyedCount/10))*(this.effects.slow>0?.8:1);}
  setPointer(x){if(Number.isFinite(x))this.pointer=x;}
  launch(){if(this.state===STATES.PLAYING){this.releaseAttached();return;}if(this.state!==STATES.READY)return;for(const b of this.balls){b.active=true;b.attached=false;b.vx=b.speed*.18;b.vy=-Math.sqrt(b.speed*b.speed-b.vx*b.vx);}this.transition(STATES.PLAYING);}
@@ -18,16 +18,16 @@ export class Game{
  if(this.state===STATES.READY){for(const b of this.balls){b.x=this.paddle.centerX;b.y=this.paddle.y-b.radius-1;}return;}
  for(const b of this.balls)if(b.attached)this.followAttached(b);
  this.accumulator+=dt;while(this.accumulator+1e-10>=CONFIG.fixedStep&&this.state===STATES.PLAYING){this.accumulator-=CONFIG.fixedStep;this.step(CONFIG.fixedStep);}}
- step(dt){this.elapsed+=dt;this.updateLaser(Math.min(dt,this.effects.laser||0));this.tickEffects(dt);this.moveBolts(dt);if(this.state!==STATES.PLAYING)return;for(const p of this.powerups)if(p.update(dt,this.paddle))this.applyPowerup(p.type);this.powerups=this.powerups.filter(p=>p.active);for(const brick of this.bricks)brick.flash=Math.max(0,brick.flash-dt);for(const b of this.balls){if(!b.active)continue;this.moveBall(b,dt);if(this.state!==STATES.PLAYING)return;}
+ step(dt){if(this.state!==STATES.PLAYING)return;this.elapsed+=dt;this.tickDrops(dt);this.updateLaser(Math.min(dt,this.effects.laser||0));this.tickEffects(dt);this.moveBolts(dt);if(this.state!==STATES.PLAYING)return;for(const p of this.powerups)if(p.update(dt,this.paddle))this.applyPowerup(p.type);this.powerups=this.powerups.filter(p=>p.active);for(const brick of this.bricks)brick.flash=Math.max(0,brick.flash-dt);for(const b of this.balls){if(!b.active)continue;this.moveBall(b,dt);if(this.state!==STATES.PLAYING)return;}
  this.balls=this.balls.filter(b=>b.active||b.attached);if(!this.balls.length)this.loseLife();}
  splitBalls(){for(const source of [...this.balls]){if(!source.active&&!source.attached)continue;for(const rotation of [-Math.PI/6,Math.PI/6]){if(this.balls.length>=6)return;const b=new Ball(source.x,source.y),angle=(source.vx||source.vy?Math.atan2(source.vy,source.vx):-Math.PI/2)+rotation;b.speed=source.speed;b.vx=Math.cos(angle)*b.speed;b.vy=Math.sin(angle)*b.speed;b.active=true;this.balls.push(b);}}}
  applyPowerup(type){const effect=POWERUP_TYPES[type];if(!effect)return;effect.apply(this);const data={type,x:this.paddle.centerX,y:this.paddle.y,color:effect.color,label:effect.label};this.onEvent('powerup_pickup',data);if(type==='fire')this.onEvent('fire_activate',data);}
  updateLaser(dt){if(dt<=0)return;this.laserClock+=dt;while(this.laserClock+1e-9>=.35){this.laserClock=Math.max(0,this.laserClock-.35);for(const x of [this.paddle.x+12,this.paddle.x+this.paddle.width-12])this.bolts.push({x,y:this.paddle.y-4,vx:0,vy:-950,radius:3,active:true});this.onEvent('laser_shot',{x:this.paddle.centerX,y:this.paddle.y});}}
  moveBolts(dt){for(const bolt of this.bolts){if(!bolt.active)continue;let hit=null;for(const brick of this.bricks){if(brick.destroyed)continue;const h=sweepCircleRect(bolt,brick,dt);if(h&&(!hit||h.t<hit.t))hit={...h,brick};}const time=hit?hit.t:dt;bolt.x+=bolt.vx*time;bolt.y+=bolt.vy*time;if(hit){bolt.active=false;this.hitBrick(hit.brick);if(this.state!==STATES.PLAYING)break;}else if(bolt.y+bolt.radius<0)bolt.active=false;}this.bolts=this.bolts.filter(b=>b.active);}
- tickEffects(dt){for(const type of ['extend','slow','fire','laser','sticky']){const before=this.effects[type]||0;this.effects[type]=Math.max(0,before-dt);if(before>0&&this.effects[type]===0){if(type==='extend')this.paddle.setWidth(CONFIG.paddleWidth);else if(type==='slow')for(const b of this.balls)b.setSpeed(this.currentSpeed());else if(type==='sticky')this.releaseAttached();}}}
+ tickEffects(dt){for(const type of ['slow','fire','laser','sticky']){const before=this.effects[type]||0;this.effects[type]=Math.max(0,before-dt);if(before>0&&this.effects[type]===0){if(type==='slow')for(const b of this.balls)b.setSpeed(this.currentSpeed());else if(type==='sticky')this.releaseAttached();}}}
  pause(){if([STATES.READY,STATES.PLAYING].includes(this.state)){this.pausedFrom=this.state;this.keys.clear();this.transition(STATES.PAUSED);}}
  resume(){if(this.state===STATES.PAUSED)this.transition(this.pausedFrom);}
- loseLife(){if(this.state!==STATES.PLAYING)return;this.lives--;this.onEvent('lose_life',{});if(this.lives>0)this.resetReady();else this.finish();}
+ loseLife(){if(this.state!==STATES.PLAYING)return;this.lives--;this.pendingDrop=null;this.dropCooldown=0;this.powerups=[];this.effects.extend=0;this.paddle.setWidth(CONFIG.paddleWidth);this.onEvent('lose_life',{});if(this.lives>0)this.resetReady();else this.finish();}
  finish(){this.transition(STATES.GAME_OVER);this.onEvent('game_over',{});}
  nextLevel(){if(this.state!==STATES.LEVEL_CLEAR)return;if(this.level>=LEVELS.length){this.finish();return;}this.level++;this.loadLevel();}
  moveBall(b,dt){if(b.attached){this.followAttached(b);return;}b.x=clamp(b.x,b.radius,CONFIG.width-b.radius);b.y=Math.max(b.radius,b.y);let remaining=dt;
@@ -50,7 +50,10 @@ export class Game{
  }
  b.trail.push({x:b.x,y:b.y});if(b.trail.length>20)b.trail.shift();if(b.y-b.radius>CONFIG.height)b.active=false;
  }
+ // One coalesced location, not a backlog of rewards. Types advance only on spawn.
+ queueDrop(brick){if(this.state!==STATES.PLAYING||this.dropsSpawned>=LEVELS[this.level-1].dropBudget)return;this.pendingDrop??={x:brick.x+brick.width/2,y:brick.y+brick.height/2};this.tickDrops(0);}
+ tickDrops(dt){if(this.state!==STATES.PLAYING)return;this.dropCooldown=Math.max(0,this.dropCooldown-dt);if(!this.pendingDrop||this.dropCooldown>1e-9||this.powerups.filter(p=>p.active).length>=2)return;if(this.dropsSpawned>=LEVELS[this.level-1].dropBudget){this.pendingDrop=null;return;}const {x,y}=this.pendingDrop;this.pendingDrop=null;this.powerups.push(new PowerUp(x,y,this.nextDropType()));this.dropsSpawned++;this.dropCooldown=8;this.onEvent('powerup_spawn',{});}
  nextDropType(){const intro=['extend','laser','multi','fire','sticky','slow','life'];const i=this.dropIndex++;return i<intro.length?intro[i]:Object.keys(POWERUP_TYPES)[Math.floor(Math.random()*Object.keys(POWERUP_TYPES).length)];}
  hitBrick(brick,{fire=false}={}){if(brick.destroyed)return;if(fire&&brick.destructible)brick.hp=1;const result=brick.hit();this.onEvent(brick.type===3?'steel_hit':result.destroyed?'brick_break':'brick_hit',{x:brick.x+brick.width/2,y:brick.y+brick.height/2,color:brick.color});
- if(result.destroyed){this.score.addScore(result.points,{brickType:brick.type});this.destroyedCount++;if(brick.type===4||brick.bonusDrop){this.powerups.push(new PowerUp(brick.x+brick.width/2,brick.y+brick.height/2,this.nextDropType()));this.onEvent('powerup_spawn',{});}for(const b of this.balls)b.setSpeed(this.currentSpeed());if(this.bricks.every(b=>!b.destructible||b.destroyed)){this.transition(STATES.LEVEL_CLEAR);this.onEvent('level_clear',{level:this.level});}}}
+ if(result.destroyed){this.score.addScore(result.points,{brickType:brick.type});this.destroyedCount++;if(brick.type===4||brick.bonusDrop)this.queueDrop(brick);for(const b of this.balls)b.setSpeed(this.currentSpeed());if(this.bricks.every(b=>!b.destructible||b.destroyed)){this.pendingDrop=null;this.transition(STATES.LEVEL_CLEAR);this.onEvent('level_clear',{level:this.level});}}}
 }

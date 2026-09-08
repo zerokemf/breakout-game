@@ -63,7 +63,7 @@ test('minimal renderer state tolerates absent collections and null effects',()=>
 });
 test('all five timed effect indicators fit within the canvas',()=>{
  const {renderer:r,calls}=fixture(),g=scene();g.effects={extend:15,slow:10,fire:15,laser:12,sticky:12};r.render(g);
- const labels=calls.filter(c=>c[0]==='fillText'&&/\d+\.\d秒$/.test(c[1]));assert.equal(labels.length,5);
+ const labels=calls.filter(c=>c[0]==='fillText'&&/(\d+\.\d秒|本命有效)$/.test(c[1]));assert.equal(labels.length,5);
  for(const c of labels){assert.ok(c[2]>=0);assert.ok(c[2]+c[4]<=1280);}
 });
 test('English hero caption retains Chinese explanation',()=>{const {renderer:r}=fixture();r.event('powerup_pickup',{type:'fire',label:'FIRE BALL',color:'#fff',x:1,y:1},{screenShake:true});assert.equal(r.caption.text,'FIRE BALL');assert.equal(r.caption.sub,'火焰球・穿透磚塊');});

@@ -1,4 +1,4 @@
-import {CONFIG} from './config.js?v=2a-drops';import {POWERUP_TYPES} from './powerup.js?v=2a-drops';
+import {CONFIG} from './config.js?v=2a-comfort';import {POWERUP_TYPES} from './powerup.js?v=2a-comfort';
 const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球'};
 const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
@@ -47,11 +47,11 @@ export class Renderer{
  c.restore();
  for(const bolt of g.bolts||[]){if(bolt.active===false)continue;const r=bolt.radius||3;c.save();c.shadowColor='#ffc669';c.shadowBlur=15;c.fillStyle='#ffb84f';c.fillRect(bolt.x-r-1,bolt.y-12,r*2+2,24);c.fillStyle='#fff4cf';c.fillRect(bolt.x-r,bolt.y-10,r*2,18);c.restore();}
  for(const b of g.balls||[]){const trail=b.trail||[],fire=effects.fire>0;c.save();if(!b.attached)for(let i=0;i<trail.length;i++){const t=trail[i];c.globalAlpha=(i+1)/trail.length*(fire?.42:.25);c.fillStyle=fire?'#ff934f':'#52e7ff';c.beginPath();c.arc(t.x,t.y,b.radius*((i+1)/trail.length)*.8,0,Math.PI*2);c.fill();}c.globalAlpha=1;c.shadowBlur=fire?19:15;c.shadowColor=fire?'#ffab59':'#9af4ff';c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,b.radius,0,Math.PI*2);c.fill();c.restore();}
- this.particles.render(c);c.fillStyle='#ff528544';c.fillRect(20,H-13,W-40,1);c.font='600 21px ui-monospace,monospace';c.textAlign='left';
+ this.particles.render(c);c.fillStyle='#ff528544';c.fillRect(20,H-13,W-40,1);c.font='600 26px system-ui';c.textAlign='left';
  const active=Object.entries(effects).filter(([type,time])=>time>0&&POWERUP_TYPES[type]);const slot=Math.min(230,(W-64)/Math.max(1,active.length));
- active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+EFFECT_NAMES[type]+' '+time.toFixed(1)+'秒',32+i*slot,H-30,slot-12);});
+ active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+EFFECT_NAMES[type]+' '+(type==='extend'?'本命有效':time.toFixed(1)+'秒'),32+i*slot,H-30,slot-12);});
  if((g.balls||[]).some(b=>b.attached)){c.save();c.font='800 34px ui-monospace,monospace';c.textAlign='center';c.strokeStyle='#08111f';c.lineWidth=9;c.strokeText('空白鍵／輕點放球',W/2,p.y-56);c.fillStyle='#b9ffd0';c.fillText('空白鍵／輕點放球',W/2,p.y-56);c.restore();}
- if(this.caption){const t=this.caption;c.save();c.globalAlpha=Math.min(1,t.time*3);c.textAlign='center';c.lineWidth=8;c.strokeStyle='#060914';c.shadowColor=t.color;c.shadowBlur=25;c.font='900 58px system-ui';c.strokeText(t.text,W/2,H*.58);c.fillStyle=t.color;c.fillText(t.text,W/2,H*.58);c.font='bold 22px ui-monospace,monospace';c.fillStyle='#fff';c.fillText(t.sub,W/2,H*.58+35);c.restore();}
+ if(this.caption){const t=this.caption;c.save();c.globalAlpha=Math.min(1,t.time*3);c.textAlign='center';c.lineWidth=8;c.strokeStyle='#060914';c.shadowColor=t.color;c.shadowBlur=25;c.font='900 58px system-ui';c.strokeText(t.text,W/2,H*.58);c.fillStyle=t.color;c.fillText(t.text,W/2,H*.58);c.font='bold 28px system-ui';c.fillStyle='#fff';c.fillText(t.sub,W/2,H*.58+35);c.restore();}
  if(this.flash>0){c.fillStyle=`rgba(139,225,255,${this.flash*.3})`;c.fillRect(0,0,W,H);}c.restore();if(dim){c.fillStyle='#0509187a';c.fillRect(0,0,W,H);}
  }
 }

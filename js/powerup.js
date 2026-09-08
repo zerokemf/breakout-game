@@ -1,6 +1,6 @@
-import {CONFIG} from './config.js?v=2a-drops';
+import {CONFIG} from './config.js?v=2a-comfort';
 export const POWERUP_TYPES=Object.freeze({
- extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{g.effects.extend=15;g.paddle.setWidth(CONFIG.paddleWidth*1.5);}},
+ extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{g.effects.extend=Infinity;g.paddle.setWidth(CONFIG.paddleWidth*1.5);}},
  slow:{icon:'↓',label:'SLOW BALL',color:'#b68cff',apply:g=>{g.effects.slow=10;for(const b of g.balls)b.setSpeed(g.currentSpeed());}},
  life:{icon:'♥',label:'EXTRA LIFE',color:'#ff6aa9',apply:g=>{g.lives=Math.min(5,g.lives+1);}},
  multi:{icon:'✣',label:'MULTI BALL',color:'#69ed97',apply:g=>g.splitBalls()},

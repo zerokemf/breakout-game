@@ -8,7 +8,11 @@ Deployment status: live on GitHub Pages. Production-URL browser acceptance passe
 
 ## 道具出現節奏
 
-第一關增加六個下排星號掉落點，加上原有兩塊道具磚，共八次掉落機會。第二、三關在各欄最下方增加星號掉落點；第四至第八關補充較易接觸的掉落點。每局前七次依序為加寬、雷射、多重球、火焰、黏球、慢速、生命，之後隨機；失去生命不重置順序。星號額外掉落不增加磚塊分數，原有排行榜上限不變。
+各關依可破壞磚塊數分配掉落預算，額外星號點分散於不同排與區域，不再集中整排。道具掉落至少間隔 8 秒遊戲時間，同時最多兩個下落；每關依磚塊數設定 5–9 次掉落上限。連續破磚只保留一個待掉落機會，不累積長隊列；過關與失去生命會清除待掉落，暫停時停止計時。每局前七次依序為加寬、雷射、多重球、火焰、黏球、慢速、生命，之後隨機；失去生命不重置順序。星號額外掉落不增加磚塊分數，原有排行榜上限不變。
+
+## 畫面與操作
+
+遊戲區依可用寬高等比例縮放並設定最大寬度；橫向縮減裝飾與留白，保留完整場地。繁中按鈕與說明提高字級。手機直向另提供下方拖曳區及發球按鈕，手指不必遮住擋板。物理解析度與球速不受畫面縮放影響。加寬擋板沒有倒數，跨關保留，失去生命或重新開始才恢復；雷射等限時道具仍有倒數。
 
 ## 介面語言
 
@@ -20,7 +24,7 @@ Deployment status: live on GitHub Pages. Production-URL browser acceptance passe
 - Pause: P / Escape or the HUD pause button. Changing tabs pauses automatically.
 - Three lives; extra lives are capped at five. Level select unlocks locally.
 
-Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is indestructible and excluded from level completion. Power-ups: 15-second paddle extend, 10-second 20% slow ball, extra life, multi-ball (three initially, six maximum), 15-second penetrating fire ball, 12-second automatic dual laser paddle, and 12-second sticky paddle. Space or tap releases sticky balls. Fire destroys strong bricks for the same 200 points, never bonus points; steel still blocks attacks. Timed pickups refresh rather than stack. All balls, including held ones, must be lost before one life is deducted. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
+Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is indestructible and excluded from level completion. Power-ups: life-bound paddle extend (persists across levels, ends on life loss/restart), 10-second 20% slow ball, extra life, multi-ball (three initially, six maximum), 15-second penetrating fire ball, 12-second automatic dual laser paddle, and 12-second sticky paddle. Space or tap releases sticky balls. Fire destroys strong bricks for the same 200 points, never bonus points; steel still blocks attacks. Timed pickups refresh rather than stack. All balls, including held ones, must be lost before one life is deducted. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
 
 ## Local development
 

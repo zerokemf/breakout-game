@@ -22,4 +22,32 @@ html[lang="zh-Hant"] .eyebrow{letter-spacing:.1em}
 html[lang="zh-Hant"] .notice{line-height:1.7}
 html[lang="zh-Hant"] .hud-label{font-size:11px;letter-spacing:.1em}
 html[lang="zh-Hant"] button{font-size:14px}
+/* Viewport budget: preserve the 16:9 field, never stretch it. */
+.arcade-shell{width:min(calc(100% - 32px),calc((100dvh - 220px)*16/9),1440px);padding:16px 0 12px}
+.masthead{margin-bottom:14px}
+.hud{min-height:64px;padding:8px 20px;gap:28px}
+.controls-bar{min-height:32px;padding:6px 16px}
+.page-footer{margin-top:10px}
+@media (max-width:700px) and (orientation:portrait){.arcade-shell{width:100%;padding:calc(12px + env(safe-area-inset-top)) env(safe-area-inset-right) calc(12px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}.hud{gap:12px;padding:8px 12px}.masthead{margin-bottom:12px}}
+@media (orientation:landscape) and (max-height:600px){
+ .arcade-shell{width:min(calc(100% - 32px - env(safe-area-inset-left) - env(safe-area-inset-right)),calc((100dvh - 62px - env(safe-area-inset-top) - env(safe-area-inset-bottom))*16/9),1440px);padding:calc(6px + env(safe-area-inset-top)) 0 calc(6px + env(safe-area-inset-bottom))}
+ .masthead,.controls-bar,.page-footer{display:none}
+ .hud{height:48px;min-height:48px;padding:2px 16px;gap:24px}
+ .hud-cell{gap:2px}.hud strong{font-size:20px}.pause-button{padding:4px 12px}
+}
+/* Readable controls retain their size even when the playfield is compact. */
+html[lang="zh-Hant"] button{font-size:16px}
+html[lang="zh-Hant"] .hud-label,.pause-label{font-size:12px}
+.eyebrow,.ready-panel .eyebrow,.brand small,.edition,.page-footer,.controls-bar,kbd{font-size:12px}
+.subtitle,.notice,.ready-panel .subtitle{font-size:15px}
+.settings-grid label,.score-table,.stat,.level-grid small{font-size:16px}
+.touch-pad{display:none}
+@media (pointer:coarse) and (orientation:portrait){
+ .touch-pad{display:flex;min-height:120px;margin:12px 12px 0;padding:16px;align-items:center;justify-content:space-between;gap:16px;border:1px solid #36536b;border-radius:14px;background:linear-gradient(145deg,#142d3e,#112032);touch-action:none;user-select:none;-webkit-user-select:none}
+ .touch-pad p{font-size:16px;line-height:1.6;margin:0;color:#c9dced}.touch-pad strong{display:block;color:var(--cyan)}
+ .touch-pad button{flex:none;min-height:48px;padding:12px 18px}
+ .overlay:not(.pass-through){position:fixed;inset:0;padding:calc(72px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));z-index:20;align-items:flex-start}.stage{isolation:auto}
+ .overlay.pass-through{padding-bottom:38px}.ready-panel{padding:8px 12px}.ready-panel .subtitle{display:none}
+ .panel{padding:22px 18px}.panel .actions{gap:10px}.brand small{letter-spacing:.15em}.edition{display:none}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
