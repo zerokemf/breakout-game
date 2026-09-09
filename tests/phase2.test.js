@@ -24,21 +24,21 @@ test('sticky catches descending balls alive, follows paddle, launch and expiry r
  Object.assign(b,{x:g.paddle.centerX+30,y:g.paddle.y-b.radius-2,vx:0,vy:440});g.update(.02);
  assert.equal(b.attached,true);near(b.attachOffset,30);assert.equal(g.lives,3);assert.equal(g.state,'PLAYING');
  near(b.vx,0);near(b.vy,0);g.setPointer(400);g.update(.02);near(b.x,430);near(b.y,g.paddle.y-b.radius-1);
- g.applyPowerup('multi');assert.equal(g.balls.length,3);for(const other of g.balls)if(other!==b)other.y=750;g.update(.02);
+ g.applyPowerup('multi');assert.equal(g.balls.length,3);for(const other of g.balls)if(other!==b){assert.equal(other.attached,true);Object.assign(other,{attached:false,active:true,y:750,vy:440});}g.update(.02);
  assert.equal(g.lives,3);assert.equal(g.balls.length,1);assert.equal(b.attached,true);
  g.launch();assert.equal(b.attached,false);assert.equal(b.active,true);assert.ok(b.vy<0);near(Math.hypot(b.vx,b.vy),b.speed);
  Object.assign(b,{x:g.paddle.centerX,y:g.paddle.y-b.radius-2,vx:0,vy:b.speed});g.update(.02);assert.equal(b.attached,true);
  g.tickEffects(12);assert.equal(g.effects.sticky,0);assert.equal(b.attached,false);assert.ok(b.vy<0);near(Math.hypot(b.vx,b.vy),b.speed);
 });
-test('seven distinctive pickups; pause freezes complete simulation; resetReady clears effects and bolts',()=>{
- assert.deepEqual(Object.keys(POWERUP_TYPES).sort(),['extend','fire','laser','life','multi','slow','sticky']);
- for(const key of ['label','icon','color'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(v=>v[key])).size,7);
+test('ten distinctive pickups; pause freezes complete simulation; resetReady clears effects and bolts',()=>{
+assert.deepEqual(Object.keys(POWERUP_TYPES).sort(),['blast','extend','fire','laser','life','magnet','multi','shield','slow','sticky']);
+for(const key of ['label','icon','color'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(v=>v[key])).size,10);
  const g=playing();for(const type of Object.keys(POWERUP_TYPES))g.applyPowerup(type);
  for(let i=0;i<7;i++)g.update(.05);assert.ok(g.bolts.length>0);
  g.pause();const snapshot=JSON.stringify({balls:g.balls,bolts:g.bolts,effects:g.effects,paddle:g.paddle,elapsed:g.elapsed,clock:g.laserClock,powerups:g.powerups,bricks:g.bricks});
  g.setPointer(100);g.launch();g.update(.05);
  assert.equal(JSON.stringify({balls:g.balls,bolts:g.bolts,effects:g.effects,paddle:g.paddle,elapsed:g.elapsed,clock:g.laserClock,powerups:g.powerups,bricks:g.bricks}),snapshot);
- g.resume();g.resetReady();assert.deepEqual(g.effects,{extend:0,slow:0,fire:0,laser:0,sticky:0});assert.deepEqual(g.bolts,[]);assert.equal(g.laserClock,0);assert.equal(g.balls.length,1);assert.equal(g.balls[0].attached,false);
+ g.resume();g.resetReady();assert.deepEqual(g.effects,{extend:0,slow:0,fire:0,laser:0,sticky:0,magnet:0});assert.deepEqual(g.bolts,[]);assert.equal(g.laserClock,0);assert.equal(g.balls.length,1);assert.equal(g.balls[0].attached,false);
  const demo=new Game();assert.deepEqual(demo.bolts,[]);demo.start(1);demo.update(.05);demo.launch();demo.update(.05);assert.equal(demo.state,'PLAYING');
 });
 test('laser fires dual swept bolts every .35s for 12s; nearest steel blocks and strong takes two',()=>{

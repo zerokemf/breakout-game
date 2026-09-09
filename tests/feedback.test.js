@@ -67,6 +67,8 @@ test('all five timed effect indicators fit within the canvas',()=>{
  for(const c of labels){assert.ok(c[2]>=0);assert.ok(c[2]+c[4]<=1280);}
 });
 test('English hero caption retains Chinese explanation',()=>{const {renderer:r}=fixture();r.event('powerup_pickup',{type:'fire',label:'FIRE BALL',color:'#fff',x:1,y:1},{screenShake:true});assert.equal(r.caption.text,'FIRE BALL');assert.equal(r.caption.sub,'火焰球・穿透磚塊');});
+test('inventory feedback and seamless clear are visible without ordinary-hit shake',()=>{const {renderer:r}=fixture();r.event('inventory_stored',{type:'laser',label:'LASER PADDLE',color:'#ffe',x:20,y:30},{screenShake:true});assert.equal(r.caption?.sub,'已存入道具庫・按 1／2 或點槽位使用');assert.equal(r.shake,0);r.event('level_clear',{level:2},{screenShake:true});assert.equal(r.caption?.text,'LEVEL CLEAR');assert.ok(r.caption.sub.includes('下一關'));});
+test('inventory storage shield and blast produce bounded distinct cues',()=>{const a=new AudioManager();a.context={state:'running',currentTime:0};a.sfxBus={};for(const name of ['inventory_stored','shield_hit','blast_hit']){let count=0;a._tone=()=>count++;a.play(name);assert.ok(count>0,name);assert.ok(count<5);}});
 const pickup=type=>({type,x:100,y:200,color:'#ffeeaa',label:type});
 test('routine contacts never initiate shake; only selected milestones shake without accumulation',()=>{
  const {renderer:r}=fixture(),settings={screenShake:true};

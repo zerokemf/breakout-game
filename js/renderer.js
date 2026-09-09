@@ -1,6 +1,6 @@
-import {CONFIG} from './config.js?v=2a-comfort';import {POWERUP_TYPES} from './powerup.js?v=2a-comfort';
-const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球'};
-const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發'};
+import {CONFIG} from './config.js?v=2b-inventory';import {POWERUP_TYPES} from './powerup.js?v=2b-inventory';
+const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球',magnet:'磁力'};
+const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發',shield:'底部護盾・抵擋一次掉球',magnet:'磁力收集・道具向你靠攏',blast:'爆破球・下次命中引爆'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
 export class Renderer{
  constructor(canvas,particles){this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.particles=particles;this.flash=0;this.shake=0;this.caption=null;}
@@ -8,12 +8,16 @@ export class Renderer{
   this.settings=settings;
   if(settings.screenShake===false||settings.reducedMotion)this.shake=0;
   else {
-   const duration=name==='lose_life'?.2:name==='level_clear'?.25:name==='powerup_pickup'&&['multi','fire'].includes(data.type)?.12:0;
+   const duration=['shield_hit','blast_hit'].includes(name)?.15:name==='lose_life'?.2:name==='level_clear'?.25:name==='powerup_pickup'&&['multi','fire'].includes(data.type)?.12:0;
    if(duration)this.shake=duration; // Replace, never accumulate impulses.
   }
   if(name==='brick_break')this.particles.burst(data.x,data.y,data.color,22);
   if(name==='powerup_pickup'){this.particles.burst(data.x,data.y,data.color,38);this.caption={text:data.label,sub:CAPTIONS[data.type]||'道具啟動',time:1.3,color:data.color};}
-  if(name==='level_clear')this.flash=.3;
+  if(name==='inventory_stored'){const v=POWERUP_TYPES[data.type];this.caption={text:data.label||v?.label||'ITEM STORED',sub:'已存入道具庫・按 1／2 或點槽位使用',time:1.3,color:data.color||v?.color||'#82e7ff'};}
+  if(name==='inventory_full')this.caption={text:data.label,sub:'庫存已滿・直接啟用',time:1.3,color:data.color};
+  if(name==='blast_hit'){this.particles.burst(data.x,data.y,'#ffa75c',48);this.flash=.15;}
+  if(name==='shield_hit'){this.caption={text:'SHIELD SAVE',sub:'護盾已消耗・繼續挑戰',time:1,color:'#82e7ff'};}
+  if(name==='level_clear'){this.flash=.3;this.caption={text:'LEVEL CLEAR',sub:data.level===10?'挑戰完成・結算成績':'下一關接續・保持節奏',time:1,color:'#75edca'};}
   if(name==='high_score')this.flash=.65;
  }
  update(dt){this.particles.update(dt);this.flash=Math.max(0,this.flash-dt);this.shake=Math.max(0,this.shake-dt);if(this.caption){this.caption.time-=dt;if(this.caption.time<=0)this.caption=null;}}
@@ -45,8 +49,11 @@ export class Renderer{
  if(effects.sticky>0){c.fillStyle='#8ff0b0';c.shadowColor='#8ff0b0';c.shadowBlur=9;c.fillRect(p.x+19,p.y-2,Math.max(0,p.width-38),4);}
  if(effects.laser>0){for(const x of [p.x+9,p.x+p.width-19]){c.shadowBlur=0;c.fillStyle='#314560';rounded(c,x,p.y-12,10,20,3);c.fill();c.fillStyle='#fff4cf';c.shadowColor='#ffc669';c.shadowBlur=12;c.fillRect(x+2,p.y-12,6,5);}}
  c.restore();
+ if(effects.magnet>0){c.save();c.strokeStyle='#a68cff66';c.lineWidth=2;for(const radius of [38,62]){c.beginPath();c.ellipse(p.centerX??p.x+p.width/2,p.y+8,p.width/2+radius,radius,0,Math.PI,Math.PI*2);c.stroke();}c.restore();}
  for(const bolt of g.bolts||[]){if(bolt.active===false)continue;const r=bolt.radius||3;c.save();c.shadowColor='#ffc669';c.shadowBlur=15;c.fillStyle='#ffb84f';c.fillRect(bolt.x-r-1,bolt.y-12,r*2+2,24);c.fillStyle='#fff4cf';c.fillRect(bolt.x-r,bolt.y-10,r*2,18);c.restore();}
  for(const b of g.balls||[]){const trail=b.trail||[],fire=effects.fire>0;c.save();if(!b.attached)for(let i=0;i<trail.length;i++){const t=trail[i];c.globalAlpha=(i+1)/trail.length*(fire?.42:.25);c.fillStyle=fire?'#ff934f':'#52e7ff';c.beginPath();c.arc(t.x,t.y,b.radius*((i+1)/trail.length)*.8,0,Math.PI*2);c.fill();}c.globalAlpha=1;c.shadowBlur=fire?19:15;c.shadowColor=fire?'#ffab59':'#9af4ff';c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,b.radius,0,Math.PI*2);c.fill();c.restore();}
+ if(g.shield){c.save();c.strokeStyle='#82e7ff';c.shadowColor='#82e7ff';c.shadowBlur=16;c.lineWidth=5;c.beginPath();c.moveTo(12,H-20);c.lineTo(W-12,H-20);c.stroke();c.restore();}
+ if(g.blastCharges>0){c.fillStyle='#ffc077';c.font='bold 22px system-ui';c.textAlign='right';c.fillText('爆破待命 ●',W-28,70);}
  this.particles.render(c);c.fillStyle='#ff528544';c.fillRect(20,H-13,W-40,1);c.font='600 26px system-ui';c.textAlign='left';
  const active=Object.entries(effects).filter(([type,time])=>time>0&&POWERUP_TYPES[type]);const slot=Math.min(230,(W-64)/Math.max(1,active.length));
  active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+EFFECT_NAMES[type]+' '+(type==='extend'?'本命有效':time.toFixed(1)+'秒'),32+i*slot,H-30,slot-12);});

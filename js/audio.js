@@ -1,6 +1,9 @@
 // All sound is generated locally. No samples, network requests, or autoplay.
 const clampVolume = (value, fallback) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 const SOUNDS = {
+  inventory_stored: [[660,0,.08,'sine',.14],[990,.07,.12,'sine',.14]],
+  shield_hit: [[160,0,.1,'triangle',.19,700],[880,.06,.18,'sine',.16]],
+  blast_hit: [[90,0,.22,'sawtooth',.15,35],[260,.02,.17,'triangle',.12,70]],
   laser_shot: [[1480, 0, .085, 'sawtooth', .07, 390], [2100, 0, .04, 'sine', .06, 900]],
   fire_activate: [[110, 0, .24, 'sawtooth', .10, 360], [220, .05, .28, 'triangle', .14, 660]],
   sticky_catch: [[620, 0, .075, 'sine', .20, 170], [240, .05, .10, 'triangle', .10, 340]],

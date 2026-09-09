@@ -52,6 +52,13 @@ html[lang="zh-Hant"] .hud-label,.pause-label{font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
+/* Keep the old cabinet width: only the 16:9 playfield shrinks by 10%. */
+.stage{width:calc(100% * 0.9);margin-inline:auto}
+.inventory-bar{height:50px;display:flex;align-items:center;justify-content:center;gap:10px;padding:3px 12px;border-top:1px solid var(--line);background:#101e30}
+.inventory-slot{display:flex;align-items:center;justify-content:center;gap:10px;flex:1;max-width:300px;min-width:0;height:44px;min-height:44px;padding:4px 10px;letter-spacing:0;white-space:nowrap}
+.inventory-slot kbd{flex:none;font-size:14px;min-width:22px;text-align:center}
+.inventory-slot:disabled{opacity:.65}
+@media (orientation:landscape) and (max-height:600px){.arcade-shell{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.hud{height:44px;min-height:44px;padding-block:0}.inventory-bar{gap:8px}}
 /* Embedded cabinet: host already supplies title/navigation. Height drives size. */
 html.embedded-game .masthead,html.embedded-game .page-footer,html.embedded-game .controls-bar{display:none}
 html.embedded-game .arcade-shell{width:min(calc(100% - 12px),calc((100dvh - 96px)*16/9));padding:6px 0;margin:auto;max-width:none}

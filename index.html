@@ -7,7 +7,7 @@
   <meta name="description" content="BREAKOUT — 霓虹打磚塊街機。突破陣形，延續連擊。">
   <title>BREAKOUT — 霓虹街機</title>
   <link rel="icon" type="image/svg+xml" href="./assets/images/arcade-mark.svg">
-  <link rel="stylesheet" href="./css/game.css?v=2a-embed">
+  <link rel="stylesheet" href="./css/game.css?v=2b-inventory">
 </head>
 <body>
   <main class="arcade-shell">
@@ -30,6 +30,10 @@
           </section>
         </div>
       </div>
+      <div class="inventory-bar" role="group" aria-label="道具欄，按 1 或 2 使用">
+        <button id="inventory0" class="inventory-slot secondary" type="button" aria-keyshortcuts="1" disabled><kbd aria-hidden="true">1</kbd><span class="inventory-name">空道具欄</span></button>
+        <button id="inventory1" class="inventory-slot secondary" type="button" aria-keyshortcuts="2" disabled><kbd aria-hidden="true">2</kbd><span class="inventory-name">空道具欄</span></button>
+      </div>
       <footer class="controls-bar"><div class="desktop-hint"><kbd>←</kbd><kbd>→</kbd><span>移動</span><i></i><kbd>空白鍵</kbd><span>發球</span><i></i><kbd>P</kbd><span>暫停</span></div><div class="touch-hint">拖曳移動 <span>·</span> 輕觸發球</div><span class="footer-note">再挑戰一次。</span></footer>
     </section>
     <section id="touchPad" class="touch-pad" aria-label="擋板觸控區">
@@ -38,6 +42,6 @@
     </section>
     <div class="page-footer"><span>經典手感，霓虹新生。</span><span>免下載，立即開玩。</span></div>
   </main>
-  <script type="module" src="./js/main.js?v=2a-embed"></script>
+  <script type="module" src="./js/main.js?v=2b-inventory"></script>
 </body>
 </html>

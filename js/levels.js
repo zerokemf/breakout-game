@@ -16,11 +16,13 @@ const definitions=[
 export const LEVELS=definitions.map(([name,rows],i)=>{
  const grid=rows.map(row=>[...row].map(Number));
  const count=grid.flat().filter(t=>t&&t!==3).length;
- const dropBudget=Math.max(5,Math.min(9,Math.round(count/8)));
+ const originalDrops=grid.flat().filter(t=>t===4).length;
+ // Existing type-4 cells (notably POWER SURGE) stay intact and retain scores.
+ const dropBudget=Math.max(originalDrops,Math.max(5,Math.min(9,Math.round(count/8))));
  const candidates=grid.flatMap((row,y)=>row.some(t=>t===1||t===2)?[y]:[]);
- const bonusCount=Math.min(candidates.length,Math.max(3,dropBudget-grid.flat().filter(t=>t===4).length));
+ const bonusCount=Math.min(candidates.length,dropBudget-originalDrops);
  const bonusDropCells=Array.from({length:bonusCount},(_,n)=>{
-  const y=candidates[Math.round(n*(candidates.length-1)/(bonusCount-1))];
+  const y=candidates[bonusCount===1?candidates.length-1:Math.round(n*(candidates.length-1)/(bonusCount-1))];
   const target=[2,8,5][(n+i)%3];
   const columns=grid[y].flatMap((t,x)=>t===1||t===2?[x]:[]);
   const x=columns.reduce((best,x)=>Math.abs(x-target)<Math.abs(best-target)?x:best);
