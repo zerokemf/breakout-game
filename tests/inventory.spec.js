@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 const base=process.env.TEST_BASE_URL||'http://127.0.0.1:8765';
-const gameEval=(page,code)=>page.evaluate(async code=>{const {game}=await import('./js/main.js?v=2b-inventory');return Function('g',code)(game);},code);
+const gameEval=(page,code)=>page.evaluate(async code=>{const {game}=await import('./js/main.js?v=2b-status');return Function('g',code)(game);},code);
 test('canvas is explicitly 90 percent wide while compact inventory and text stay readable',async({page})=>{
  await page.setViewportSize({width:844,height:390});await page.goto(base);await page.locator('[data-action="play"]').click();
  const canvas=await page.locator('canvas').boundingBox(),machine=await page.locator('.game-machine').boundingBox(),bar=await page.locator('.inventory-bar').boundingBox();

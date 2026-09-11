@@ -53,11 +53,7 @@ export class Renderer{
  for(const bolt of g.bolts||[]){if(bolt.active===false)continue;const r=bolt.radius||3;c.save();c.shadowColor='#ffc669';c.shadowBlur=15;c.fillStyle='#ffb84f';c.fillRect(bolt.x-r-1,bolt.y-12,r*2+2,24);c.fillStyle='#fff4cf';c.fillRect(bolt.x-r,bolt.y-10,r*2,18);c.restore();}
  for(const b of g.balls||[]){const trail=b.trail||[],fire=effects.fire>0;c.save();if(!b.attached)for(let i=0;i<trail.length;i++){const t=trail[i];c.globalAlpha=(i+1)/trail.length*(fire?.42:.25);c.fillStyle=fire?'#ff934f':'#52e7ff';c.beginPath();c.arc(t.x,t.y,b.radius*((i+1)/trail.length)*.8,0,Math.PI*2);c.fill();}c.globalAlpha=1;c.shadowBlur=fire?19:15;c.shadowColor=fire?'#ffab59':'#9af4ff';c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,b.radius,0,Math.PI*2);c.fill();c.restore();}
  if(g.shield){c.save();c.strokeStyle='#82e7ff';c.shadowColor='#82e7ff';c.shadowBlur=16;c.lineWidth=5;c.beginPath();c.moveTo(12,H-20);c.lineTo(W-12,H-20);c.stroke();c.restore();}
- if(g.blastCharges>0){c.fillStyle='#ffc077';c.font='bold 22px system-ui';c.textAlign='right';c.fillText('爆破待命 ●',W-28,70);}
  this.particles.render(c);c.fillStyle='#ff528544';c.fillRect(20,H-13,W-40,1);c.font='600 26px system-ui';c.textAlign='left';
- const active=Object.entries(effects).filter(([type,time])=>time>0&&POWERUP_TYPES[type]);const slot=Math.min(230,(W-64)/Math.max(1,active.length));
- active.forEach(([type,time],i)=>{c.fillStyle=POWERUP_TYPES[type].color;c.fillText(POWERUP_TYPES[type].icon+' '+EFFECT_NAMES[type]+' '+(type==='extend'?'本命有效':time.toFixed(1)+'秒'),32+i*slot,H-30,slot-12);});
- if((g.balls||[]).some(b=>b.attached)){c.save();c.font='800 34px ui-monospace,monospace';c.textAlign='center';c.strokeStyle='#08111f';c.lineWidth=9;c.strokeText('空白鍵／輕點放球',W/2,p.y-56);c.fillStyle='#b9ffd0';c.fillText('空白鍵／輕點放球',W/2,p.y-56);c.restore();}
  if(this.caption){const t=this.caption;c.save();c.globalAlpha=Math.min(1,t.time*3);c.textAlign='center';c.lineWidth=8;c.strokeStyle='#060914';c.shadowColor=t.color;c.shadowBlur=25;c.font='900 58px system-ui';c.strokeText(t.text,W/2,H*.58);c.fillStyle=t.color;c.fillText(t.text,W/2,H*.58);c.font='bold 28px system-ui';c.fillStyle='#fff';c.fillText(t.sub,W/2,H*.58+35);c.restore();}
  if(this.flash>0){c.fillStyle=`rgba(139,225,255,${this.flash*.3})`;c.fillRect(0,0,W,H);}c.restore();if(dim){c.fillStyle='#0509187a';c.fillRect(0,0,W,H);}
  }

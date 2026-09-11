@@ -1,5 +1,5 @@
 import {Game} from './game.js?v=2b-inventory';import {CONFIG,STATES} from './config.js?v=2b-inventory';import {LEVELS} from './levels.js?v=2b-inventory';
-import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2b-inventory';import {Particles} from './particles.js?v=2b-inventory';import {AudioManager} from './audio.js?v=2b-inventory';import {Renderer} from './renderer.js?v=2b-inventory';
+import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2b-inventory';import {Particles} from './particles.js?v=2b-inventory';import {AudioManager} from './audio.js?v=2b-inventory';import {Renderer} from './renderer.js?v=2b-status';
 if(window.self!==window.top)document.documentElement.classList.add('embedded-game');
 const $=id=>document.getElementById(id),panel=$('panel'),overlay=$('overlay'),stage=$('stage'),canvas=$('gameCanvas');
 const read=(key,fallback)=>{try{const v=JSON.parse(safeStorage.getItem(key));return v??fallback;}catch{return fallback;}};
@@ -14,7 +14,8 @@ export const game=new Game({onEvent:(name,data)=>{audio.play(name);renderer.even
 const demo=new Game();demo.start(1);demo.launch();
 const levelName=id=>['初次接觸','霓虹金字塔','交錯激流','中空迷陣','雙重衝擊','鋼鐵之門','電子迴路','硬派連線','能量湧現','最終頻率'][id-1];
 const pickupNames={extend:'加寬擋板',slow:'減速球',life:'額外生命',multi:'多重球',fire:'火焰球',laser:'雷射擋板',sticky:'黏性擋板',shield:'底部護盾',magnet:'磁力收集',blast:'爆破球'};
-function updateInventory(){for(let i=0;i<2;i++){const el=$(`inventory${i}`),type=game.inventory?.[i],name=pickupNames[type]||'空道具欄';el.querySelector('.inventory-name').textContent=name;el.disabled=!type||![STATES.READY,STATES.PLAYING].includes(game.state);el.setAttribute('aria-label',`道具欄 ${i+1}：${name}${type?'，按 '+(i+1)+' 使用':''}`);}}
+function updateActiveEffects(){const names={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球',magnet:'磁力'};const labels=Object.entries(game.effects||{}).filter(([k,v])=>v>0&&names[k]).map(([k,v])=>names[k]+'・'+(k==='extend'?'本命有效':v.toFixed(1)+'秒'));if(game.shield)labels.push('護盾・1次');if(game.blastCharges>0)labels.push('爆破・'+game.blastCharges+'發');if(game.balls.some(b=>b.attached))labels.push('空白鍵／輕點放球');$('activeEffects').textContent='使用中：'+(labels.join('　｜　')||'無');}
+function updateInventory(){updateActiveEffects();for(let i=0;i<2;i++){const el=$(`inventory${i}`),type=game.inventory?.[i],name=pickupNames[type]||'空道具欄';el.querySelector('.inventory-name').textContent=name;el.disabled=!type||![STATES.READY,STATES.PLAYING].includes(game.state);el.setAttribute('aria-label',`道具欄 ${i+1}：${name}${type?'，按 '+(i+1)+' 使用':''}`);}}
 function useInventory(i){if(![STATES.READY,STATES.PLAYING].includes(game.state))return;audio.unlock();game.activateSlot(i);updateInventory();}
 for(let i=0;i<2;i++)$(`inventory${i}`).addEventListener('click',()=>useInventory(i));
 function button(label,action,kind='secondary',extra=''){return `<button type="button" class="${kind}" data-action="${action}" ${extra}>${label}</button>`;}
