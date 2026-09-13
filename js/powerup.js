@@ -1,4 +1,4 @@
-import {CONFIG} from './config.js?v=2b-inventory';
+import {CONFIG} from './config.js?v=3a-charge';
 export const POWERUP_TYPES=Object.freeze({
  aim:{icon:'⌖',label:'GUIDED SHOT',color:'#a6f56a',apply:g=>g.armAim()},
  extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{if(g.extendTier>=3){g.shield=true;return;}g.extendTier=(g.extendTier||0)+1;g.effects.extend=Infinity;g.paddle.setWidth(CONFIG.paddleWidth*[1,1.5,1.8,2.1][g.extendTier]);g.onEvent('paddle_upgrade',{tier:g.extendTier,x:g.paddle.centerX,y:g.paddle.y,color:'#38def6'});}},

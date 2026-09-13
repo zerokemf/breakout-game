@@ -1,5 +1,5 @@
-import {Game} from './game.js?v=2b-inventory';import {CONFIG,STATES} from './config.js?v=2b-inventory';import {LEVELS} from './levels.js?v=2b-inventory';
-import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=2b-inventory';import {Particles} from './particles.js?v=2b-inventory';import {AudioManager} from './audio.js?v=2b-inventory';import {Renderer} from './renderer.js?v=2b-status';
+import {Game} from './game.js?v=3a-charge';import {CONFIG,STATES} from './config.js?v=3a-charge';import {LEVELS} from './levels.js?v=3a-charge';
+import {ArcadeAPI,qualificationRank,safeStorage} from './api.js?v=3a-charge';import {Particles} from './particles.js?v=3a-charge';import {AudioManager} from './audio.js?v=3a-charge';import {Renderer} from './renderer.js?v=3a-charge';
 if(window.self!==window.top)document.documentElement.classList.add('embedded-game');
 const $=id=>document.getElementById(id),panel=$('panel'),overlay=$('overlay'),stage=$('stage'),canvas=$('gameCanvas');
 const read=(key,fallback)=>{try{const v=JSON.parse(safeStorage.getItem(key));return v??fallback;}catch{return fallback;}};

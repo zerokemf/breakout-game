@@ -1,4 +1,4 @@
-import {CONFIG} from './config.js?v=2b-inventory';import {POWERUP_TYPES} from './powerup.js?v=2b-inventory';
+import {CONFIG} from './config.js?v=3a-charge';import {POWERUP_TYPES} from './powerup.js?v=3a-charge';
 const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球',magnet:'磁力'};
 const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發',shield:'底部護盾・抵擋一次掉球',magnet:'磁力收集・道具向你靠攏',blast:'爆破球・下次命中引爆',aim:'精準瞄準・接球後選擇角度'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
