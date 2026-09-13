@@ -69,12 +69,14 @@ test('all five timed effect indicators fit within the canvas',()=>{
 test('English hero caption retains Chinese explanation',()=>{const {renderer:r}=fixture();r.event('powerup_pickup',{type:'fire',label:'FIRE BALL',color:'#fff',x:1,y:1},{screenShake:true});assert.equal(r.caption.text,'FIRE BALL');assert.equal(r.caption.sub,'火焰球・穿透磚塊');});
 test('inventory feedback and seamless clear are visible without ordinary-hit shake',()=>{const {renderer:r}=fixture();r.event('inventory_stored',{type:'laser',label:'LASER PADDLE',color:'#ffe',x:20,y:30},{screenShake:true});assert.equal(r.caption?.sub,'已存入道具庫・按 1／2 或點槽位使用');assert.equal(r.shake,0);r.event('level_clear',{level:2},{screenShake:true});assert.equal(r.caption?.text,'LEVEL CLEAR');assert.ok(r.caption.sub.includes('下一關'));});
 test('inventory storage shield and blast produce bounded distinct cues',()=>{const a=new AudioManager();a.context={state:'running',currentTime:0};a.sfxBus={};for(const name of ['inventory_stored','shield_hit','blast_hit']){let count=0;a._tone=()=>count++;a.play(name);assert.ok(count>0,name);assert.ok(count<5);}});
+test('guided path and charge shots use graphics, never paddle text',()=>{const {renderer:r,calls}=fixture(),g=scene();g.extendTier=2;g.charge={active:true,elapsed:1.5};g.aimingBall={};g.getAimPath=()=>[{x:570,y:630},{x:400,y:300}];g.chargeShots=[{x:300,y:400,radius:7,full:false,active:true},{x:600,y:400,radius:16,full:true,active:true}];r.render(g);assert.ok(calls.some(c=>c[0]==='setLineDash'&&c[1].length));for(const [x,radius] of [[300,7],[600,16]])assert.ok(calls.some(c=>c[0]==='arc'&&c[1]===x&&c[3]===radius));assert.ok(!calls.some(c=>c[0]==='fillText'&&c[3]>600));});
+test('charge small/full steel and upgrade audio signatures differ',()=>{const a=new AudioManager();a.context={state:'running',currentTime:0};a.sfxBus={};const signatures=[];for(const [name,data] of [['charge_fire',{full:false}],['charge_fire',{full:true}],['steel_break',{}],['paddle_upgrade',{}]]){const notes=[];a._tone=(...args)=>notes.push(args);a.play(name,data);assert.ok(notes.length);signatures.push(JSON.stringify(notes));}assert.equal(new Set(signatures).size,4);});
 const pickup=type=>({type,x:100,y:200,color:'#ffeeaa',label:type});
 test('routine contacts never initiate shake; only selected milestones shake without accumulation',()=>{
  const {renderer:r}=fixture(),settings={screenShake:true};
  for(const name of ['brick_break','brick_hit','wall_hit','paddle_hit','steel_hit','laser_hit','laser_shot','high_score']){r.event(name,{},settings);assert.equal(r.shake,0,name);}
  for(const type of ['extend','slow','life','laser','sticky']){r.event('powerup_pickup',pickup(type),settings);assert.equal(r.shake,0,type);}
- for(const type of ['multi','fire']){r.event('powerup_pickup',pickup(type),settings);assert.equal(r.shake,.12);r.event('powerup_pickup',pickup(type),settings);assert.equal(r.shake,.12);r.update(.2);assert.equal(r.shake,0);}
- r.event('lose_life',{},settings);assert.equal(r.shake,.2);
- r.event('level_clear',{},settings);assert.equal(r.shake,.25);
+ for(const name of ['lose_life','level_clear','blast_hit','shield_hit']){r.event(name,{},settings);assert.equal(r.shake,0,name);}
+ r.event('charge_fire',{full:false},settings);assert.equal(r.shake,0);
+ for(const [name,data] of [['paddle_upgrade',{tier:2}],['charge_fire',{full:true}],['steel_break',{x:10,y:10}]]){r.event(name,data,settings);assert.ok(r.shake>=.1&&r.shake<=.2);assert.ok(/[A-Z]/.test(r.caption.text));assert.ok(/[\u3400-\u9fff]/.test(r.caption.sub));r.update(.3);}
 });

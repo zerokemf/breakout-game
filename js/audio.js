@@ -1,6 +1,10 @@
 // All sound is generated locally. No samples, network requests, or autoplay.
 const clampVolume = (value, fallback) => Number.isFinite(Number(value)) ? Math.max(0, Math.min(1, Number(value))) : fallback;
 const SOUNDS = {
+  charge_fire: [[740,0,.14,'triangle',.18,250]],
+  charge_full: [[120,0,.23,'sawtooth',.16,40],[980,.03,.25,'triangle',.16,280]],
+  steel_break: [[1850,0,.13,'triangle',.16,320],[420,.04,.23,'sawtooth',.13,90]],
+  paddle_upgrade: [[440,0,.1,'sine',.17],[660,.07,.12,'triangle',.17],[990,.14,.18,'sine',.18]],
   inventory_stored: [[660,0,.08,'sine',.14],[990,.07,.12,'sine',.14]],
   shield_hit: [[160,0,.1,'triangle',.19,700],[880,.06,.18,'sine',.16]],
   blast_hit: [[90,0,.22,'sawtooth',.15,35],[260,.02,.17,'triangle',.12,70]],
@@ -77,7 +81,8 @@ export class AudioManager {
     oscillator.stop(start + duration + .015);
   }
 
-  play(name) {
+  play(name,data={}) {
+    if(name==='charge_fire'&&data.full)name='charge_full';
     if (!this.context || this.context.state !== 'running' || this.paused || this.sfxVolume === 0 || !SOUNDS[name]) return;
     const now = this.context.currentTime;
     for (const [hz, delay, duration, type, volume, end] of SOUNDS[name]) {

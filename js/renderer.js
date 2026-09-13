@@ -1,6 +1,6 @@
 import {CONFIG} from './config.js?v=2b-inventory';import {POWERUP_TYPES} from './powerup.js?v=2b-inventory';
 const EFFECT_NAMES={extend:'加寬',slow:'慢速',fire:'火焰',laser:'雷射',sticky:'黏球',magnet:'磁力'};
-const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發',shield:'底部護盾・抵擋一次掉球',magnet:'磁力收集・道具向你靠攏',blast:'爆破球・下次命中引爆'};
+const CAPTIONS={extend:'加寬擋板・接球更從容',slow:'慢速球・穩住節奏',life:'額外生命・再戰一回',multi:'多重球・全面出擊',fire:'火焰球・穿透磚塊',laser:'雷射擋板・自動連射',sticky:'黏性擋板・瞄準再出發',shield:'底部護盾・抵擋一次掉球',magnet:'磁力收集・道具向你靠攏',blast:'爆破球・下次命中引爆',aim:'精準瞄準・接球後選擇角度'};
 const rounded=(ctx,x,y,w,h,r)=>{ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
 export class Renderer{
  constructor(canvas,particles){this.canvas=canvas;this.ctx=canvas.getContext('2d',{alpha:false});this.particles=particles;this.flash=0;this.shake=0;this.caption=null;}
@@ -8,7 +8,7 @@ export class Renderer{
   this.settings=settings;
   if(settings.screenShake===false||settings.reducedMotion)this.shake=0;
   else {
-   const duration=['shield_hit','blast_hit'].includes(name)?.15:name==='lose_life'?.2:name==='level_clear'?.25:name==='powerup_pickup'&&['multi','fire'].includes(data.type)?.12:0;
+   const duration=name==='paddle_upgrade'?.12:name==='steel_break'?.18:name==='charge_fire'&&data.full?.15:0;
    if(duration)this.shake=duration; // Replace, never accumulate impulses.
   }
   if(name==='brick_break')this.particles.burst(data.x,data.y,data.color,22);
@@ -18,6 +18,9 @@ export class Renderer{
   if(name==='blast_hit'){this.particles.burst(data.x,data.y,'#ffa75c',48);this.flash=.15;}
   if(name==='shield_hit'){this.caption={text:'SHIELD SAVE',sub:'護盾已消耗・繼續挑戰',time:1,color:'#82e7ff'};}
   if(name==='level_clear'){this.flash=.3;this.caption={text:'LEVEL CLEAR',sub:data.level===10?'挑戰完成・結算成績':'下一關接續・保持節奏',time:1,color:'#75edca'};}
+  if(name==='paddle_upgrade')this.caption={text:'PADDLE UPGRADE',sub:`加寬${['零','一','二','三'][data.tier||1]}階・接球範圍提升`,time:1.3,color:'#7aeaff'};
+  if(name==='charge_fire'){this.caption={text:data.full?'FULL CHARGE':'CHARGE SHOT',sub:data.full?'全蓄力・貫穿並擊破鋼鐵':'蓄力彈・精準出擊',time:1.1,color:data.full?'#ffd17b':'#88f7ff'};this.particles.burst(data.x,data.y,this.caption.color,data.full?42:16);}
+  if(name==='steel_break'){this.caption={text:'STEEL BREAK',sub:'鋼鐵擊破・開闢新路線',time:1.1,color:'#ffd17b'};this.particles.burst(data.x,data.y,'#dceaff',42);}
   if(name==='high_score')this.flash=.65;
  }
  update(dt){this.particles.update(dt);this.flash=Math.max(0,this.flash-dt);this.shake=Math.max(0,this.shake-dt);if(this.caption){this.caption.time-=dt;if(this.caption.time<=0)this.caption=null;}}
@@ -27,6 +30,8 @@ export class Renderer{
  c.strokeStyle='#3b63831c';c.lineWidth=1;for(let x=0;x<W;x+=64){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke();}for(let y=16;y<H;y+=48){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke();}
  c.fillStyle='#39dff8';c.shadowColor='#39dff8';c.shadowBlur=12;c.fillRect(0,0,3,H-32);c.fillRect(W-3,0,3,H-32);c.fillRect(0,0,W,3);c.shadowBlur=0;
  c.textAlign='left';c.font='600 13px ui-monospace,monospace';c.fillStyle='#5a7895';c.fillText('關卡 '+String(g.level||1).padStart(2,'0')+'   /   霓虹街機',36,43);c.textAlign='right';c.fillText('擊破・反彈・再挑戰',W-36,43);
+ // Static dotted prediction uses the engine's collision path, behind all actors.
+ if(g.aimingBall){const points=g.getAimPath?.()||[];if(points.length>1){c.save();c.strokeStyle='#bafcff';c.lineWidth=3;c.setLineDash([3,12]);c.lineCap='round';c.beginPath();points.forEach((v,i)=>i?c.lineTo(v.x,v.y):c.moveTo(v.x,v.y));c.stroke();c.restore();}}
  for(const b of g.bricks||[]){
   if(b.destroyed)continue;c.save();c.shadowColor=b.color;c.shadowBlur=b.type===3?0:b.type===4?9:4;
   const gradient=c.createLinearGradient(b.x,b.y,b.x,b.y+b.height);gradient.addColorStop(0,b.flash>0?'#ffffff':b.color);gradient.addColorStop(1,b.type===3?'#29394e':b.color+'99');c.fillStyle=gradient;rounded(c,b.x,b.y,b.width,b.height,5);c.fill();c.shadowBlur=0;c.strokeStyle=b.type===3?'#8593a6':b.color;c.lineWidth=1;c.stroke();c.fillStyle='#ffffff50';c.fillRect(b.x+7,b.y+4,b.width-14,2);
@@ -46,10 +51,13 @@ export class Renderer{
  c.save();
  if(effects.extend>0){c.shadowColor='#7aeaff';c.shadowBlur=16;c.strokeStyle='#7aeaff88';c.lineWidth=2;rounded(c,p.x-4,p.y-4,p.width+8,p.height+8,12);c.stroke();}
  c.shadowBlur=16;c.shadowColor='#3ce9ff';const pg=c.createLinearGradient(p.x,p.y,p.x,p.y+p.height);pg.addColorStop(0,'#e6fdff');pg.addColorStop(.35,'#4ce6f7');pg.addColorStop(1,'#147da1');c.fillStyle=pg;rounded(c,p.x,p.y,p.width,p.height,9);c.fill();c.shadowBlur=0;c.fillStyle='#fe72b8';rounded(c,p.x+5,p.y+4,10,p.height-8,4);c.fill();rounded(c,p.x+p.width-15,p.y+4,10,p.height-8,4);c.fill();
+ for(let i=0;i<(g.extendTier||0);i++){c.fillStyle='#133e65';c.fillRect(p.x+p.width/2-14+(i*12),p.y+5,7,8);}
+ if(g.charge?.active){const q=Math.min(1,g.charge.elapsed/1.5),full=q>=1,x=p.x+p.width/2;c.save();c.shadowColor=full?'#ffd17b':'#82f7ff';c.shadowBlur=full?24:12;c.fillStyle=c.shadowColor;c.beginPath();c.arc(x,p.y-10,5+q*9,0,Math.PI*2);c.fill();c.fillStyle='#fff';c.beginPath();c.arc(x,p.y-10,3+q*4,0,Math.PI*2);c.fill();c.shadowBlur=0;c.fillStyle='#1d354e';c.fillRect(p.x,p.y+p.height+7,p.width,5);c.fillStyle=full?'#ffd17b':'#82f7ff';c.fillRect(p.x,p.y+p.height+7,p.width*q,5);c.restore();}
  if(effects.sticky>0){c.fillStyle='#8ff0b0';c.shadowColor='#8ff0b0';c.shadowBlur=9;c.fillRect(p.x+19,p.y-2,Math.max(0,p.width-38),4);}
  if(effects.laser>0){for(const x of [p.x+9,p.x+p.width-19]){c.shadowBlur=0;c.fillStyle='#314560';rounded(c,x,p.y-12,10,20,3);c.fill();c.fillStyle='#fff4cf';c.shadowColor='#ffc669';c.shadowBlur=12;c.fillRect(x+2,p.y-12,6,5);}}
  c.restore();
  if(effects.magnet>0){c.save();c.strokeStyle='#a68cff66';c.lineWidth=2;for(const radius of [38,62]){c.beginPath();c.ellipse(p.centerX??p.x+p.width/2,p.y+8,p.width/2+radius,radius,0,Math.PI,Math.PI*2);c.stroke();}c.restore();}
+ for(const shot of g.chargeShots||[]){if(shot.active===false)continue;c.save();c.shadowColor=shot.full?'#ffd17b':'#82f7ff';c.shadowBlur=shot.full?26:12;c.fillStyle=c.shadowColor;c.beginPath();c.arc(shot.x,shot.y,shot.radius,0,Math.PI*2);c.fill();c.strokeStyle=c.shadowColor;c.lineWidth=shot.full?5:2;c.beginPath();c.moveTo(shot.x,shot.y+shot.radius);c.lineTo(shot.x,shot.y+(shot.full?46:21));c.stroke();if(shot.full){c.lineWidth=3;c.beginPath();c.arc(shot.x,shot.y,shot.radius+7,0,Math.PI*2);c.stroke();}c.fillStyle='#fff';c.beginPath();c.arc(shot.x,shot.y,Math.max(2,shot.radius*.55),0,Math.PI*2);c.fill();c.restore();}
  for(const bolt of g.bolts||[]){if(bolt.active===false)continue;const r=bolt.radius||3;c.save();c.shadowColor='#ffc669';c.shadowBlur=15;c.fillStyle='#ffb84f';c.fillRect(bolt.x-r-1,bolt.y-12,r*2+2,24);c.fillStyle='#fff4cf';c.fillRect(bolt.x-r,bolt.y-10,r*2,18);c.restore();}
  for(const b of g.balls||[]){const trail=b.trail||[],fire=effects.fire>0;c.save();if(!b.attached)for(let i=0;i<trail.length;i++){const t=trail[i];c.globalAlpha=(i+1)/trail.length*(fire?.42:.25);c.fillStyle=fire?'#ff934f':'#52e7ff';c.beginPath();c.arc(t.x,t.y,b.radius*((i+1)/trail.length)*.8,0,Math.PI*2);c.fill();}c.globalAlpha=1;c.shadowBlur=fire?19:15;c.shadowColor=fire?'#ffab59':'#9af4ff';c.fillStyle='#fff';c.beginPath();c.arc(b.x,b.y,b.radius,0,Math.PI*2);c.fill();c.restore();}
  if(g.shield){c.save();c.strokeStyle='#82e7ff';c.shadowColor='#82e7ff';c.shadowBlur=16;c.lineWidth=5;c.beginPath();c.moveTo(12,H-20);c.lineTo(W-12,H-20);c.stroke();c.restore();}

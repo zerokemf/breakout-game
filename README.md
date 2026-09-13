@@ -20,13 +20,19 @@ GitHub Pages is the public deployment target. Local UI regression results do not
 
 ## Controls
 - Move: Arrow Left / Arrow Right, A / D, mouse, or touch drag.
-- Launch: Space or a tap (dragging in READY does not launch).
+- Launch / guided fire: Space or a tap (dragging in READY does not launch).
+- Charge: hold left mouse on the canvas or C, release to fire. Minimum 0.4s; full at 1.5s; cooldown 2s / 4s. Space never charges. Touch dragging only moves the paddle; use the dedicated outside-canvas hold button. Pause, blur, pointer cancellation and lost capture cancel without firing.
+- Guided shot: the eleventh pickup captures a ball for aiming. Move the pointer / drag to adjust the dotted path, then click or Space to fire. Paddle remains frozen while aiming.
 - Inventory: click/tap slot 1 or 2, or press 1 / 2. READY and PLAYING allow use; empty slots and paused/intermission slots are disabled.
 - Pause: P / Escape or the HUD pause button, including the level-clear intermission. Changing tabs pauses automatically.
 - Level clear: play continues through a 0.8-second transition; the next sector starts automatically with no next-level button. The tenth clear automatically opens the result flow.
 - Three lives; extra lives are capped at five. Level select unlocks locally.
 
-Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is indestructible and excluded from level completion. Power-ups: life-bound paddle extend (persists across levels, ends on life loss/restart), 10-second 20% slow ball, extra life, multi-ball (three initially, six maximum), 15-second penetrating fire ball, 12-second automatic dual laser paddle, 12-second sticky paddle, one-hit floor shield, 12-second pickup magnet, and one-charge blast ball. Space or tap releases sticky balls. Fire destroys strong bricks for the same 200 points, never bonus points; steel still blocks attacks. Timed pickups refresh rather than stack. All balls, including held ones, must be lost before one life is deducted. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
+Normal bricks score 100, two-hit strong bricks 200, power bricks 150. Steel is excluded from level completion; only a full-charge shot can break it, without bonus points. Power-ups: life-bound paddle extend (persists across levels, ends on life loss/restart), 10-second 20% slow ball, extra life, multi-ball (three initially, six maximum), 15-second penetrating fire ball, 12-second automatic dual laser paddle, 12-second sticky paddle, one-hit floor shield, 12-second pickup magnet, and one-charge blast ball. Space or tap releases sticky balls. Fire destroys strong bricks for the same 200 points, never bonus points; steel still blocks ordinary attacks. Timed pickups refresh rather than stack. All balls, including held ones, must be lost before one life is deducted. Timers freeze while paused. Maximum ball speed is 1.7× initial speed.
+
+### 加寬與蓄力
+
+加寬由基礎 170 逐次升為 255／306／357，最高三階；跨關保留，失去生命或重開清除。畫布外狀態列提供繁中階級與蓄力進度，擋板附近僅保留條紋、集氣核心及進度圖形，沒有常駐文字。大小蓄力彈以色彩、尾跡及光環區分。中央英文事件標題保留繁中副標。
 
 ### 新道具速查
 
@@ -74,8 +80,8 @@ GitHub Pages is enabled with the GitHub Actions build type. Push to `main`; the 
 
 ## Phase 2A feedback
 
-Ordinary brick destruction, wall contacts, paddle contacts and laser hits never shake the screen. Multi-ball/fire activation, life loss and level clear use brief bounded feedback, disabled by Screen shake settings. Level/row palettes are richer while the ball retains a bright white core and brick types keep their visual symbols. Existing campaign scores remain compatible: the same finite bricks yield the same maximum points.
+Ordinary brick destruction, wall contacts, paddle contacts and laser hits never shake the screen. Only paddle upgrade, full-charge fire and steel break use 0.12–0.18s shake, disabled by Screen shake settings and reduced-motion preference. Level/row palettes are richer while the ball retains a bright white core and brick types keep their visual symbols. Existing campaign scores remain compatible: the same finite bricks yield the same maximum points.
 
 ## Scope
 
-Includes MENU / READY / PLAYING / PAUSED / LEVEL_CLEAR / GAME_OVER / ENTER_INITIALS / LEADERBOARD, ten levels and ten power-ups. Two-slot inventory, shield, magnet, blast and seamless level transitions extend Phase 2A. Multi-ball, fire, laser and sticky are implemented in Phase 2A. Combo, achievements, Boss and additional modes remain future extensions, not claimed implemented. No accounts, editor, UGC or multiplayer.
+Includes MENU / READY / PLAYING / PAUSED / LEVEL_CLEAR / GAME_OVER / ENTER_INITIALS / LEADERBOARD, ten levels and eleven power-ups. Two-slot inventory, shield, magnet, blast and seamless level transitions extend Phase 2A. Multi-ball, fire, laser and sticky are implemented in Phase 2A. Combo, achievements, Boss and additional modes remain future extensions, not claimed implemented. No accounts, editor, UGC or multiplayer.

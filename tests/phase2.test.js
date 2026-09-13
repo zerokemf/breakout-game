@@ -30,9 +30,9 @@ test('sticky catches descending balls alive, follows paddle, launch and expiry r
  Object.assign(b,{x:g.paddle.centerX,y:g.paddle.y-b.radius-2,vx:0,vy:b.speed});g.update(.02);assert.equal(b.attached,true);
  g.tickEffects(12);assert.equal(g.effects.sticky,0);assert.equal(b.attached,false);assert.ok(b.vy<0);near(Math.hypot(b.vx,b.vy),b.speed);
 });
-test('ten distinctive pickups; pause freezes complete simulation; resetReady clears effects and bolts',()=>{
-assert.deepEqual(Object.keys(POWERUP_TYPES).sort(),['blast','extend','fire','laser','life','magnet','multi','shield','slow','sticky']);
-for(const key of ['label','icon','color'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(v=>v[key])).size,10);
+test('eleven distinctive pickups; pause freezes complete simulation; resetReady clears effects and bolts',()=>{
+assert.deepEqual(Object.keys(POWERUP_TYPES).sort(),['aim','blast','extend','fire','laser','life','magnet','multi','shield','slow','sticky']);
+for(const key of ['label','icon','color'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(v=>v[key])).size,11);
  const g=playing();for(const type of Object.keys(POWERUP_TYPES))g.applyPowerup(type);
  for(let i=0;i<7;i++)g.update(.05);assert.ok(g.bolts.length>0);
  g.pause();const snapshot=JSON.stringify({balls:g.balls,bolts:g.bolts,effects:g.effects,paddle:g.paddle,elapsed:g.elapsed,clock:g.laserClock,powerups:g.powerups,bricks:g.bricks});

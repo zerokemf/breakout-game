@@ -23,7 +23,7 @@
         <button id="pauseButton" class="pause-button secondary" type="button" aria-label="暫停遊戲" title="暫停（P 鍵或退出鍵）"><span aria-hidden="true">Ⅱ</span><span class="pause-label">暫停</span></button>
       </div>
       <div id="stage" class="stage">
-        <canvas id="gameCanvas" width="1280" height="720" tabindex="0" aria-label="BREAKOUT 遊戲區。使用方向鍵或 A、D 鍵移動擋板；空白鍵發球，P 鍵暫停。">瀏覽器需支援畫布功能才能遊玩 BREAKOUT。</canvas>
+        <canvas id="gameCanvas" width="1280" height="720" tabindex="0" aria-label="BREAKOUT 遊戲區。使用方向鍵或 A、D 鍵移動擋板；空白鍵發球，按住 C 或滑鼠左鍵蓄力，P 鍵暫停。">瀏覽器需支援畫布功能才能遊玩 BREAKOUT。</canvas>
         <div id="overlay" class="overlay">
           <section id="panel" class="panel" aria-label="遊戲選單" aria-live="polite">
             <p class="eyebrow">霓虹街機</p><h1 class="title">BREAK<span>OUT</span></h1><p class="subtitle">突破陣形。<br>延續連擊。</p><p class="notice">街機載入中…</p>
@@ -31,7 +31,7 @@
         </div>
       </div>
       <div class="effect-controls">
-      <div id="activeEffects" class="active-effects" aria-label="使用中效果">使用中：無</div>
+      <div id="activeEffects" class="active-effects" aria-label="使用中效果"><span id="effectLabels">使用中：無</span><span class="charge-status"><span id="chargeStatus">蓄力：就緒・按住 C／滑鼠左鍵</span><progress id="chargeMeter" max="1.5" value="0" aria-label="蓄力進度"></progress></span></div>
       <div class="inventory-bar" role="group" aria-label="道具欄，按 1 或 2 使用">
         <button id="inventory0" class="inventory-slot secondary" type="button" aria-keyshortcuts="1" disabled><kbd aria-hidden="true">1</kbd><span class="inventory-name">空道具欄</span></button>
         <button id="inventory1" class="inventory-slot secondary" type="button" aria-keyshortcuts="2" disabled><kbd aria-hidden="true">2</kbd><span class="inventory-name">空道具欄</span></button>
@@ -41,7 +41,8 @@
     </section>
     <section id="touchPad" class="touch-pad" aria-label="擋板觸控區">
       <p><strong>左右拖曳移動擋板</strong>不遮住球，橫向玩更大。</p>
-      <button id="touchLaunch" class="primary" type="button" aria-label="發球或釋放黏球">發球／放球</button>
+      <button id="chargeButton" class="secondary" type="button" aria-label="按住蓄力，放開發射">按住蓄力</button>
+      <button id="touchLaunch" class="primary" type="button" aria-label="發球、釋放黏球或瞄準發射">發球／放球</button>
     </section>
     <div class="page-footer"><span>經典手感，霓虹新生。</span><span>免下載，立即開玩。</span></div>
   </main>

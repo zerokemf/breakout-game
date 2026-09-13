@@ -1,6 +1,7 @@
 import {CONFIG} from './config.js?v=2b-inventory';
 export const POWERUP_TYPES=Object.freeze({
- extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{g.effects.extend=Infinity;g.paddle.setWidth(CONFIG.paddleWidth*1.5);}},
+ aim:{icon:'⌖',label:'GUIDED SHOT',color:'#a6f56a',apply:g=>g.armAim()},
+ extend:{icon:'↔',label:'PADDLE EXTEND',color:'#38def6',apply:g=>{if(g.extendTier>=3){g.shield=true;return;}g.extendTier=(g.extendTier||0)+1;g.effects.extend=Infinity;g.paddle.setWidth(CONFIG.paddleWidth*[1,1.5,1.8,2.1][g.extendTier]);g.onEvent('paddle_upgrade',{tier:g.extendTier,x:g.paddle.centerX,y:g.paddle.y,color:'#38def6'});}},
  slow:{icon:'↓',label:'SLOW BALL',color:'#b68cff',apply:g=>{g.effects.slow=10;for(const b of g.balls)b.setSpeed(g.currentSpeed());}},
  life:{icon:'♥',label:'EXTRA LIFE',color:'#ff6aa9',apply:g=>{g.lives=Math.min(5,g.lives+1);}},
  multi:{icon:'✣',label:'MULTI BALL',color:'#69ed97',apply:g=>g.splitBalls()},

@@ -18,9 +18,9 @@ test('blast consumes one charge, damages neighbors once, excludes steel and far 
  g.bolts=[{x:530,y:360,vx:0,vy:-950,radius:3,active:true},{x:530,y:360,vx:0,vy:-950,radius:3,active:true}];g.moveBolts(.1);assert.equal(g.score.getScore(),450);
  g.applyPowerup('blast');g.loseLife();assert.equal(g.blastCharges,0);g.applyPowerup('blast');g.start();assert.equal(g.blastCharges,0);
 });
-test('all ten powerups are introduced without repeats after the first extend laser multi',()=>{
- const {g}=setup();const intro=Array.from({length:10},()=>g.nextDropType());assert.deepEqual(intro,['extend','laser','multi','fire','shield','magnet','blast','sticky','slow','life']);
- for(const key of ['label','color','icon'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(p=>p[key])).size,10);
+test('all eleven powerups are introduced without repeats after the first extend laser multi',()=>{
+ const {g}=setup();const intro=Array.from({length:11},()=>g.nextDropType());assert.deepEqual(intro,['extend','laser','multi','fire','shield','magnet','blast','sticky','slow','life','aim']);
+ for(const key of ['label','color','icon'])assert.equal(new Set(Object.values(POWERUP_TYPES).map(p=>p[key])).size,11);
 });
 test('magnet smoothly attracts pickups for twelve simulation seconds, pause and READY freeze it',()=>{
  const {g}=setup();g.bricks=[];g.applyPowerup('magnet');assert.equal(g.effects.magnet,12);

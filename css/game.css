@@ -69,6 +69,13 @@ html.embedded-game .game-machine{box-shadow:none}
 html.embedded-game .notice,html.embedded-game .subtitle{font-size:17px}
 @media(max-width:700px) and (orientation:portrait){html.embedded-game .arcade-shell{width:100%;padding:0}html.embedded-game .hud{padding:8px 12px}html.embedded-game .hud strong{font-size:24px}html.embedded-game .hud-label{font-size:13px}}
 
+/* Abilities stay outside the field without changing cabinet geometry. */
+.charge-status{display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid #36536b;color:#a4f5f1}
+#chargeMeter{appearance:none;-webkit-appearance:none;width:120px;height:10px;border:0;border-radius:5px;overflow:hidden;background:#24394d;accent-color:var(--cyan);vertical-align:middle}
+#chargeMeter::-webkit-progress-bar{background:#24394d;border-radius:5px}#chargeMeter::-webkit-progress-value{background:linear-gradient(90deg,#43dfe5,#ffd17b);border-radius:5px}#chargeMeter::-moz-progress-bar{background:#63f2ef}
+#chargeButton{touch-action:none;user-select:none;-webkit-user-select:none}
+@media(pointer:coarse) and (orientation:portrait){.touch-pad{flex-wrap:wrap;gap:10px}.touch-pad p{flex-basis:100%}.touch-pad button{flex:1;padding:10px}.charge-status{display:flex;margin:5px 0 0;padding:4px 0 0;border-left:0;border-top:1px solid #294256}}
+@media(orientation:landscape) and (max-height:600px){.charge-status{line-height:20px;margin-left:10px;padding-left:10px}}
 /* Persistent labels are outside all ball and paddle coordinates. */
 .effect-controls~.controls-bar{display:none}.active-effects{min-height:32px;padding:5px 16px;font:600 16px/1.4 system-ui;color:#bce8ef;background:#0d1929;border-top:1px solid #294256;overflow-wrap:anywhere}
 @media(orientation:landscape) and (max-height:600px){.effect-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.active-effects{height:50px;min-height:0;overflow:auto;white-space:nowrap;line-height:42px;padding:3px 8px;font-size:14px}.inventory-bar{padding:3px 4px;gap:4px}.inventory-slot{padding:4px;font-size:16px!important}.inventory-slot kbd{min-width:14px}.inventory-slot{gap:4px}}
